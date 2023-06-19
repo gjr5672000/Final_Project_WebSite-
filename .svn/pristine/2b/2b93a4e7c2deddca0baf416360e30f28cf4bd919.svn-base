@@ -1,0 +1,11 @@
+package kr.or.ddit.dgrade.dao;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.dgrade.vo.DgradeVO;
+
+@Mapper
+public interface DgradeDAO {
+	public int insertStuDgrade(DgradeVO dgrade);
+//	public int insertDeptDgrade(DgradeVO dgrade);
+}

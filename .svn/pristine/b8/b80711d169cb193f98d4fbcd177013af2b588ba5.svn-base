@@ -1,0 +1,19 @@
+package kr.or.ddit.course.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.course.vo.CourseVO;
+
+/**
+ * 수강 DAO
+ *  - 23.05.12 생성
+ * @author ShinYuCheol
+ *
+ */
+@Mapper
+public interface CourseDAO {
+
+}

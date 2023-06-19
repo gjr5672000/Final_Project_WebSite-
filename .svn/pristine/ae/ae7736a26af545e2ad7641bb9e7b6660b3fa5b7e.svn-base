@@ -1,0 +1,63 @@
+package kr.or.ddit.asgn.vo;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotBlank;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.attatch.vo.AttatchFileGroupVO;
+import kr.or.ddit.attatch.vo.AttatchFileVO;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Data
+@EqualsAndHashCode(of = "AsgnNo")
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+public class AsgnVO implements Serializable{
+	private int rnum;
+	
+	@NotBlank
+	private String asgnNo;
+	
+	@NotBlank
+	private String lectNo;
+	@NotBlank
+	private String asgnName;
+	@NotBlank
+	private String asgnContent;
+	
+	@NotBlank
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate asgnRdate;
+	
+	@NotBlank
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate asgnDdate;
+	
+	private MultipartFile[] asgnFile;
+	public void setAsgnFile(MultipartFile[] asgnFile) {
+		if(asgnFile==null || asgnFile.length==0) return;
+		this.asgnFile = asgnFile; 
+		this.atchFileGroup = new AttatchFileGroupVO();
+		atchFileGroup.setAtchfileList(
+		Arrays.stream(asgnFile)
+				.filter((mf)->!mf.isEmpty())
+				.map((mf)->new AttatchFileVO(mf))
+				.collect(Collectors.toList())
+		);
+	}
+	private AttatchFileGroupVO atchFileGroup;//has many관계 
+	private List<AsgnSubmitVO> asgnSubmitList;//has many관계
+	
+}

@@ -1,0 +1,31 @@
+package kr.or.ddit.Calendar.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.Calendar.vo.CalendarVO;
+
+@Mapper
+public interface CalendarDAO {
+	/**
+	 * 캘린더 일정 띄우기!!!!!
+	 * @return
+	 */
+	public List<CalendarVO> selectCalendarList();
+	/**
+	 * 캘린더 일정 등록하기!!
+	 * @param calendarVO
+	 * @return
+	 */
+	public int insertCalendar(CalendarVO calendarVO);
+
+	/**
+	 * 캘린더 일정 수정하깅!!!
+	 * @param calendarVO
+	 * @return
+	 */
+	public int updateCalendar(CalendarVO calendarVO);
+
+	public CalendarVO selectCalendar(int id);
+}

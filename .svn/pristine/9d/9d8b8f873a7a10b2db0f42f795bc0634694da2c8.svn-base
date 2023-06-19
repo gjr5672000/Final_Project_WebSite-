@@ -1,0 +1,21 @@
+package kr.or.ddit.dgrade.service;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.dgrade.dao.DgradeDAO;
+import kr.or.ddit.dgrade.vo.DgradeVO;
+
+@Service
+public class DgradeServiceImpl implements DgradeService {
+
+	@Inject
+	private DgradeDAO dgradeDAO;
+	
+	@Override
+	public int createStuDgrade(DgradeVO dgrade) {
+		return dgradeDAO.insertStuDgrade(dgrade);
+	}
+
+}

@@ -1,0 +1,78 @@
+package kr.or.ddit.attendance.service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.attendance.dao.AttendanceDAO;
+import kr.or.ddit.attendance.vo.AttendanceVO;
+import kr.or.ddit.course.vo.CourseVO;
+import kr.or.ddit.student.vo.StudentVO;
+
+@Service
+public class AttendanceServiceImpl implements AttendanceService {
+	
+	@Inject
+	private AttendanceDAO attendDAO;
+	
+	@Override
+	public List<AttendanceVO> retrieveStaticsAttendList(String lectNo) {
+		// 해당 강의를 수강하는 학생들의 정보 리스트
+		List<AttendanceVO> attendList = attendDAO.selectCourseStu(lectNo);
+		
+		// 학생마다의 출석 카운트 
+		for(AttendanceVO attend : attendList) {
+			
+			// 갯수 받을 변수
+			int countAttend = 0; // 출석, 지각, 조퇴
+			int countDeattend = 0; // 결석
+			int countCurrentAttend = 0; // 현재까지 수업숫자
+			
+			// 학생 번호 뽑을 리스트
+			List<StudentVO> stuList = attend.getStudentList();
+			for(StudentVO stuVO : stuList) {
+				countAttend = attendDAO.countStuAttend(stuVO.getMemNo()); //결과 받아옴.
+				countDeattend = attendDAO.countStuDeattend(stuVO.getMemNo());
+				countCurrentAttend = attendDAO.countCurrentAttend(lectNo);
+			}
+			// 출석vo에 넣어주기
+			attend.setCountAttend(countAttend);
+			attend.setCountDeattend(countDeattend);
+			attend.setCountCurrentAttend(countCurrentAttend);
+			
+		}
+		return attendList;
+		
+	}
+
+	@Override
+	public List<CourseVO> retrieveStuList(String lectNo) {
+		return attendDAO.selectStuList(lectNo);
+	}
+
+	@Override
+	public int modifyAttend(List<AttendanceVO> attendList) {
+		int count=0;
+		for(AttendanceVO attend : attendList) {
+			int cnt = attendDAO.updateAttend(attend);
+			count = count + cnt;
+		}
+		return count;
+	}
+
+	@Override
+	public List<AttendanceVO> retrieveMyattend(AttendanceVO attend) {
+		List<AttendanceVO> attendList = attendDAO.selectMyattend(attend);
+		String lectName = attendDAO.selectMylectname(attend.getLectNo());
+		for(AttendanceVO attendOne : attendList) {
+			attendOne.setLectName(lectName);
+		}
+		return attendList;
+	}
+
+		
+
+}

@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
+
+<style>
+.gridDIV{
+	display: grid;
+	grid-template-columns: 3fr 2fr;
+}
+
+.doughnut{
+	width:260px;
+	text-align: center;
+	margin: auto;
+}
+
+.attendTable{
+	width:95%;	
+	white-space:nowrap;
+	overflow-x:scroll;
+}
+td{
+	idth:auto;
+}
+.socketSpace{
+	text-align: right;
+}
+.attendTableDiv {
+	overflow: auto;
+	min-width: 450px;
+}
+	
+
+
+/* 등록금고지서 모달 */
+	#attendModal{
+	    position: fixed;
+	    width: 100%;
+	    height: 150%;
+	    left: 0px; 
+	    right: 0px;
+	    z-index: 9999999999;
+	    display: none;
+	    background-color: rgba(128, 128, 128, 0.5);
+	}
+	
+	#attendModalDiv{
+	    width: 50%;
+	    height: 45%;
+	    margin: 100px auto;
+	    background-color: white;
+	} 
+	#overflow{
+		max-height: 550px;
+		overflow: auto;
+	}
+	#refuseReason{
+		display:none;
+	}
+	.redfont{
+		color: red;
+		text-align: center;
+		font-weight: bold;
+	}
+	.icon{ 
+	text-align: center; 
+	font-size: xx-large; 
+	} 
+	.marginSpace{ 
+		margin-right: 66px; 
+	} 
+</style>
+	
+	
+	<div style="display:flex; justify-content:flex-end; align-items:flex-start;">
+		<form:form>
+			<input class="btn btn-secondary" value="고지서" id="PaymentModal" display="">
+		</form:form>
+	</div>
+	
+<div class ="space m-3 p-5">
+<table class ="table table-boardered">
+	<div style="display:flex; justify-content:flex-end; align-items:flex-start;">
+		<button class="btn btn-warning rounded-pill btn-sm" onclick="modalOpen()">등록금 납부상세</button>
+	</div>
+	<tr>
+		<th>이름 :</th>
+		<td>${tuti.tuitionName}</td>
+	</tr>
+	
+	<tr>
+		<th>단과대학:</th>
+		<td>${tuti.colName}</td>
+	</tr>
+	
+	<tr>
+		<th>학과명:</th>
+		<td>${tuti.tuitionDept}</td>
+	</tr>
+	
+   	<tr>
+		<th>해당 학기:</th>
+		<td>${tuti.tuitionSemester}</td>
+	</tr>
+	
+	<tr>
+		<th>납부일</th>
+		<td>${tuti.tpDate}</td>
+	</tr>
+	
+	<tr>
+		<th>장학 수혜 금액</th>
+		<td>${tuti.tuitionSchrec}</td>
+	</tr>
+	
+	<tr>
+		<th>납부 금액</th>
+		<td>${tuti.tuitionAmount}</td>
+	</tr>
+	
+	
+	<tr>
+		<th>총 납입액</th>
+		<td>${tuti.tuitionPayment}</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<c:url value="/tuti/tutiUpdate.do" var="updateURL">
+				<c:param name="what" value="${tuti.tuitionNo }"/>
+			</c:url>
+		</td>
+	</tr>
+	
+
+</table>
+	<form:form modelAttribute="tuti" action="${cPath}/tuti/tutiDelete.do" method="post">
+	<form:hidden path="tuitionNo"/>
+		<security:authorize access="hasRole('EMP')">
+			<a class="btn btn-primary" href="${updateURL}">수정</a>
+		</security:authorize>
+			<security:authorize access="hasRole('EMP')">
+			<input class="btn btn-danger" type="submit" value="삭제"/>
+		</security:authorize>
+		<a class="btn btn-info" href="${cPath }/tuti/tutiList.do" >목록으로</a>
+		<a class="btn btn-secondary" href="javascript:history.back()">뒤로가기</a>
+	</form:form>
+</div>
+
+<script src="${cPath}/resources/js/tuti/tutiView.js"></script>

@@ -1,0 +1,18 @@
+package kr.or.ddit.attendance.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class AttendanceAdmitController {
+	
+	@GetMapping("/attendance/attendAdmit.do")
+	public String getUI(
+		@RequestParam("what") String attendNo
+	) {
+		//출석정보 가져오기
+		
+		return "attendance/attendAdmit";
+	}
+}

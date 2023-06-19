@@ -1,0 +1,68 @@
+package kr.or.ddit.lecture.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.lecture.dao.LectEvalDAO;
+import kr.or.ddit.lecture.service.LectEvalService;
+import kr.or.ddit.lecture.vo.LectEvalArtiVO;
+import kr.or.ddit.lecture.vo.LectureEvaluationVO;
+import kr.or.ddit.member.vo.MemberVOWrapper;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class LectEvalController {
+	
+	@Inject
+	private LectEvalService lectEvalService;
+
+	@Inject
+	private LectEvalDAO lectEvalDAO;
+	
+	@ModelAttribute("lectEval")
+	public LectureEvaluationVO lectEval(
+		@RequestParam("what") String lectNo
+		, Authentication authentication
+	) {
+		MemberVOWrapper memVO = (MemberVOWrapper)authentication.getPrincipal();
+		String stuNo = memVO.getRealUser().getMemNo();
+		
+		LectureEvaluationVO lectEval = new LectureEvaluationVO();
+		lectEval.setStuNo(stuNo);
+		lectEval.setLectNo(lectNo);
+		return lectEvalDAO.selectCourse(lectEval); 
+	}
+	
+	@GetMapping("/lecture/lectEval.do")
+	public String getUI(
+		@ModelAttribute("lectEval") LectureEvaluationVO lectEval	
+		,Model model
+	) {
+		List<LectEvalArtiVO> lectEvalArti = lectEvalDAO.selectLectEvalArtiList();
+		model.addAttribute("leaList", lectEvalArti);
+		return "lecture/lectureEvaluation";
+	}
+	
+	@PostMapping("/lecture/lectEval.do")
+	public String createLectEval(
+		@ModelAttribute("lectEval") LectureEvaluationVO lectEval
+	) {
+		log.info("lectEval:{}",lectEval);
+		log.info("lectEval.lectEvalList:{}",lectEval.getLectEvalList());
+		
+		lectEvalService.createLectEval(lectEval);
+		return "lecture/lectureEvaluation";
+	}
+}

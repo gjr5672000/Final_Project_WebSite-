@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.asgn.dao.AsgnDAO">
+
+	<select id="selectAsgnList" resultType="AsgnVO" parameterType="string">
+		SELECT 
+		    ASGN_NO AS "과제번호"
+		    , E.SUB_NAME AS "교과목명"
+		    , A.LECT_NO  AS "강의번호"
+		    , C.LECT_NAME AS "강의명"
+		    , D.MEM_NAME AS "담당교수명"
+		    , ASGN_NAME AS "과제명"
+		    , ASGN_CONTENT AS "과제내용"
+		    , ASGN_RDATE AS "과제등록일자"
+		    , ASGN_DDATE AS "과제마감일자"
+		    , ASGN_FILE AS "첨부파일"
+		FROM ASGN A
+		INNER JOIN COURSE B ON A.LECT_NO = B.LECT_NO
+		INNER JOIN LECTURE C ON A.LECT_NO = C.LECT_NO
+		INNER JOIN MEMBER D ON C.PRO_NO = D.MEM_NO
+		INNER JOIN SUBJECT E ON C.SUB_NO = E.SUB_NO
+		WHERE A.LECT_NO = '#{lectNo}'
+	</select>
+</mapper>

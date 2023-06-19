@@ -1,0 +1,50 @@
+package kr.or.ddit.professor.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.professor.service.ProfessorStudyService;
+import kr.or.ddit.professor.vo.StudyVO;
+
+/**
+ * 교수 연구 컨트롤러
+ * @author Kim Eui Yeon
+ *
+ */
+@Controller
+@RequestMapping("/professor")
+public class ProfessorStudyController {
+	
+	@Inject
+	private ProfessorStudyService professorStudyService;
+	//UI읽기------------------------------------------------------------------------
+	@GetMapping("/professorStudy.do")
+	public String getUI() {
+		return "professor/professorStudyList";
+	}
+	//List 출력---------------------------------------------------------------------
+	@GetMapping(produces = "application/json;charset=utf-8", value = "/professorStudyList.do")
+	@ResponseBody
+	public List<StudyVO> professorStudyList(){
+		 return professorStudyService.retrieveStudyList();
+	}
+	//연구 상세조회-----------------------------------------------------------------
+	@GetMapping(produces = "application/json;charset=utf-8" ,value = "/professorStudyView.do")
+	@ResponseBody
+	public StudyVO professorStudyView(
+			@RequestParam("what") String studyNo
+			) {
+		return professorStudyService.retrieveStudy(studyNo);
+		
+	}
+
+}

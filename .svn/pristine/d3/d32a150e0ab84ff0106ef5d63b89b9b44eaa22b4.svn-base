@@ -1,0 +1,48 @@
+package kr.or.ddit.asgn.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.asgn.dao.AsgnDAO;
+import kr.or.ddit.asgn.vo.AsgnSubmitVO;
+import kr.or.ddit.asgn.vo.AsgnVO;
+import kr.or.ddit.vo.Pagination;
+
+@Service
+public class AsgnServiceImpl implements AsgnService {
+	@Inject
+	private AsgnDAO asgnDAO;
+	
+//---------------학생이 사용----------------------------------	
+	@Override
+	public AsgnSubmitVO retrieveAsgnSubmit(AsgnSubmitVO asgnSubmit) {
+		
+		return null;
+	}
+
+	@Override
+	public int createdAsgnSubmit(AsgnSubmitVO asgnSubmit) {
+		return 0;
+	}
+
+	@Override
+	public int removeAsgnSubmit(AsgnSubmitVO asgnSubmit) {
+		return 0;
+	}
+//-----------------학생과 교수가 조회-------------------------------
+	@Override
+	public List<AsgnVO> retrieveAsgnList(String lectNo) {
+		List<AsgnVO> asgnList = asgnDAO.selectAsgnList(lectNo);
+		return asgnList;
+	}
+
+	@Override
+	public AsgnVO retrieveAsgn(AsgnVO asgn) {
+		return null;
+	}
+
+}

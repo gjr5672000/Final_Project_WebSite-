@@ -1,0 +1,35 @@
+package kr.or.ddit.member.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.member.dao.MemberDAO;
+import kr.or.ddit.member.vo.MemberVO;
+
+@Service
+public class MemberServiceImpl implements MemberService {
+
+	@Inject
+	private MemberDAO memberDAO;
+	
+	@Override
+	public List<MemberVO> searchId(MemberVO member) {
+		return memberDAO.searchId(member);
+	}
+
+	@Override
+	public ServiceResult searchPasswd(MemberVO input) {
+		ServiceResult result = null;
+		
+		MemberVO member = memberDAO.searchPasswd(input);
+		if(member==null) result = ServiceResult.FAIL;
+		else result = ServiceResult.OK;
+		
+		return result;
+	}
+
+}

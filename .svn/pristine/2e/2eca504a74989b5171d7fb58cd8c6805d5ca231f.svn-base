@@ -1,0 +1,45 @@
+package kr.or.ddit.student.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.student.service.StudentService;
+import kr.or.ddit.student.vo.StudentVO;
+import kr.or.ddit.vo.Pagination;
+import kr.or.ddit.vo.SimpleCondition;
+
+@Controller
+@RequestMapping("/student/studentList.do")
+public class StudentController {
+	
+	@Inject
+	private StudentService service;
+	
+	@GetMapping
+	public String getUI() {
+		return "student/studentList";
+	}
+	
+	@PostMapping
+	@ResponseBody
+	public Pagination<StudentVO> list(
+		@RequestParam(value = "page", required = false, defaultValue = "1") int currentPage
+		, @ModelAttribute("simpleCondition") SimpleCondition simpleCondition
+	){
+		Pagination<StudentVO> pagination = new Pagination<StudentVO>(5, 3);
+		pagination.setCurrentPage(currentPage);
+		pagination.setSimpleCondition(simpleCondition);
+		
+		service.retrieveStudentList(pagination);
+		
+		return pagination;
+	}
+}

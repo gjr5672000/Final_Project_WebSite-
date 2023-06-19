@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.lecture.dao.LectureDAO">
+
+	<resultMap type="LectureVO" id="lectListMap" autoMapping="true">
+		<id property="lectNo" column="LECT_NO" />
+		<collection property="lectDetailList" ofType="LectureTimePlaceVO" autoMapping="true" />
+	</resultMap>
+	<select id="selectLectureList" resultMap="lectListMap" parameterType="LectureVO">
+		SELECT 
+			LECT_NO
+			,LECT_NAME
+			,MEM_NAME
+			,SUB_GRADE
+			,SUB_SCR
+			,SUB_STATE
+			,SUB_COMM_NAME
+			,COL_NAME
+			,DEPT_NAME
+			
+			,LT_NO
+			,LTD_NO
+			,LTD_DAY
+			,LTD_PERIOD
+			,LR_NO
+			,LR_NUM
+			,BUIL_NO
+			,BUIL_NAME
+			
+		FROM LECTURE_VIEW
+		WHERE AY_YEAR=#{ayYear} AND AY_SEMESTER=#{aySemester} 
+	</select>
+	
+	<resultMap type="LectureVO" id="lectDetailMap" autoMapping="true">
+		<id property="lectNo" column="LECT_NO" />
+		<collection property="lectDetailList" ofType="LectureTimePlaceVO" autoMapping="true" />
+		<collection property="lectPlanList" ofType="LectureWeekPlanVO" autoMapping="true" />
+	</resultMap>	
+	<select id="selectLecture" resultMap="lectDetailMap" parameterType="string">
+	SELECT
+	    LV.LECT_NO
+	    ,SUB_NO
+	    ,PRO_NO
+	    ,LECT_NAME
+	    ,LECT_EXP
+	    ,LECT_MM
+	    ,LECT_PM
+	    ,LECT_ONF
+	    ,LECT_ONF_NAME
+	    ,LECT_STATE
+	    ,LECT_STATE_NAME
+	    ,AY_YEAR
+	    ,AY_SEMESTER
+	    ,MEM_NAME
+	    ,DEPT_NO
+	    ,COL_NO
+	    ,SUB_NAME
+	    ,SUB_EXP
+	    ,SUB_GRADE
+	    ,SUB_HOURS
+	    ,SUB_SCR
+	    ,SUB_STATE
+	    ,SUB_REASON
+	    ,SUB_COMM
+	    ,SUB_COMM_NAME
+	    ,COL_NAME
+	    ,DEPT_NAME
+	    ,LT_NO
+	    ,LTD_NO
+	    ,LTD_DAY
+	    ,LTD_PERIOD
+	    ,LR_NO
+	    ,LR_NUM
+		,BUIL_NO
+		,BUIL_NAME
+	    
+	    ,LWP_NO
+	    ,LWP_WEEK
+	    ,LWP_CONTENT
+	FROM 
+	    LECTURE_VIEW LV LEFT OUTER JOIN LECTURE_WEEK_PLAN LWP
+	        ON(LV.LECT_NO = LWP.LECT_NO)
+	WHERE LV.LECT_NO = #{lectNo}
+	ORDER BY LWP_WEEK
+	</select>
+</mapper>

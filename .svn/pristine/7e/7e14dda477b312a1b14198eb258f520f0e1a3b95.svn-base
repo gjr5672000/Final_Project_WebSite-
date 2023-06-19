@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.asgn.dao.AsgnDAO">
+
+	<resultMap type="AsgnVO" id="asgn" autoMapping="true">
+		<id column="ASGN_NO" property="asgnNo" />
+		<collection property="asgnSubmitList" ofType="AsgnSubmitVO" autoMapping="true"/>
+	</resultMap>
+
+	<select id="selectAsgnList" resultMap="asgn" parameterType="string">
+		SELECT 
+		    A.ASGN_NO
+		    , LECT_NO
+		    , ASGN_NAME
+		    , ASGN_CONTENT
+		    , ASGN_RDATE
+		    , ASGN_DDATE
+		    , ASGN_FILE
+		    
+		    , AS_NO
+		    , B.ASGN_NO
+		    , COURSE_NO
+		    , STU_NO
+		    , AS_SDATE
+		    , AS_CONTENT
+		    , AS_SCORE
+		    , AS_FILE
+		FROM ASGN A
+			LEFT OUTER JOIN ASGN_SUBMIT B ON A.ASGN_NO = B.ASGN_NO
+		WHERE LECT_NO = #{lectNo}
+		ORDER BY 1
+	</select>
+	
+	<select id="selectAsgn" resultMap="asgn" parameterType="AsgnSubmitVO">
+		WITH SUBMITVIEW AS (
+           SELECT 
+	           	AS_NO
+			    , ASGN_NO
+			    , COURSE_NO
+			    , STU_NO
+			    , AS_SDATE
+			    , AS_CONTENT
+			    , AS_SCORE
+			    , AS_FILE 
+           FROM ASGN_SUBMIT 
+           WHERE STU_NO = #{stuNo}
+       )
+		SELECT 
+		    A.ASGN_NO
+		    , LECT_NO
+		    , ASGN_NAME
+		    , ASGN_CONTENT
+		    , ASGN_RDATE
+		    , ASGN_DDATE
+		    , ASGN_FILE
+		    
+		    , AS_NO
+		    , B.ASGN_NO
+		    , COURSE_NO
+		    , STU_NO
+		    , AS_SDATE
+		    , AS_CONTENT
+		    , AS_SCORE
+		    , AS_FILE
+		FROM ASGN A 
+			LEFT OUTER JOIN SUBMITVIEW B ON A.ASGN_NO = B.ASGN_NO
+		WHERE A.ASGN_NO = #{asgnNo}	
+	</select>
+	
+	<insert id="insertAsgnSubmit" parameterType="AsgnSubmitVO">
+		<selectKey order="BEFORE" resultType="string" keyProperty="asNo">
+			SELECT AS_SEQ.NEXTVAL
+			FROM ASGN_SUBMIT
+		</selectKey>
+		INSERT INTO ASGN_SUBMIT
+	    (
+	        AS_NO
+	        , ASGN_NO
+	        , COURSE_NO
+	        , STU_NO
+	        , AS_SDATE
+	        , AS_CONTENT
+	        , AS_SCORE
+	        , AS_FILE
+	    )
+		VALUES
+	    (
+	        #{asNo,jdbcType=VARCHAR}
+	        , #{asgnNo,jdbcType=VARCHAR}	
+	        , (SELECT COURSE_NO FROM COURSE WHERE LECT_NO = #{courseNo})
+	        , #{stuNo,jdbcType=VARCHAR}
+	        , SYSDATE
+	        , #{asContent,jdbcType=VARCHAR}
+	        , 0
+	        , #{asFile,jdbcType=NUMERIC}
+	    )
+	</insert>
+</mapper>

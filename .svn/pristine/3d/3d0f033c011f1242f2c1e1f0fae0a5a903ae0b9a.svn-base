@@ -1,0 +1,177 @@
+/**
+ * 
+ */
+
+let insertFormArea = $("#insertFormArea");
+let displayDiv = $("#displayDiv");
+var addCnt = 0; // 몇 문제 추가할 건지 선택한 값
+
+let ExamNo = document.getElementById("examNo").value;
+
+$("#insertForm").keydown(function (event)
+    {
+        if (event.keyCode == '13') {
+            if (window.event)
+            {
+                event.preventDefault();
+                return;
+            }
+        }
+ });
+
+// 몇 문제 추가할건지 선택하고 추가 누르면 그 개수만큼 table에 tr태그 만들어주기
+let addErrorSpan = $("#addErrorSpan");
+let addFormBtn = $("#addFormBtn").on("click", function(){
+  let addCnt = parseInt($("[name=addCnt]").val());
+
+  if (addCnt === NaN || addCnt <= 0){
+    addErrorSpan.text("출제할 문제 수를 입력해주세요.");
+    return;
+  } else if (addCnt > 10) {
+    addErrorSpan.text("최대 10개까지 입력할 수 있습니다.");
+    return;
+  } else {
+    addErrorSpan.empty();
+  }
+
+  insertFormArea.empty();
+  $("#insertFormBtn").show();
+  displayDiv.show();
+
+  console.log("addCnt: ", addCnt);
+  console.log("ExamNo: ", ExamNo);
+
+  selectedValuesArray = []; // 배열 초기화
+
+  for (let i = 0; i < addCnt; i++) {
+    let startNumber = i + 1; // 문제 번호 설정
+    let trTag = fn_makeTr(startNumber, addCnt);
+    insertFormArea.append(trTag);
+  }
+});
+
+// 저장객체를 배열로 만들기
+let selectedValuesArray = [];
+
+// 함수 실행 후 객체에 데이터 저장
+let fn_makeTr = (startNumber, addCnt) => {
+  let set = {
+    eqNumber: startNumber.toString(), // 문제 번호 설정
+    eqQue: "",
+    eqScore: "",
+    etNo: [],
+    etQue: [],
+    eqRightAnswer: [],
+    examNo: ExamNo
+  };
+
+  let tdTagEtNo = $("<td>");
+  let tdTagEtQue = $("<td>");
+  let tdTagEtRightAnswer = $("<td>");
+
+  for (let i = 0; i < 4; i++) {
+    let etNoInput = $("<input type='text' name='etNo' value='" + (i + 1) + "' readonly><br><br>").css("border", "none");
+    tdTagEtNo.append(etNoInput);
+
+    let etQueTextarea = $("<input type='text' name='etQue' placeholder='보기문항' required><br><br>");
+    tdTagEtQue.append(etQueTextarea);
+
+    let eqRightAnswerInput = $("<input type='text' name='eqRightAnswer' placeholder='정답' required><br><br>");
+    tdTagEtRightAnswer.append(eqRightAnswerInput);
+
+    etQueTextarea.on("change", function() {
+      set.etQue[i] = $(this).val();
+    });
+
+    eqRightAnswerInput.on("change", function() {
+      set.eqRightAnswer[i] = $(this).val();
+    });
+  }
+
+  let eqNumberInput = $("<input type='text' name='eqNumber' placeholder='문제번호' required' readonly>").val(startNumber).css("border", "none");
+  let eqQueTextarea = $("<input type='text' name='eqQue' placeholder='문제' required>");
+  let eqScoreInput = $("<input type='text' name='eqScore' placeholder='문제 배점' required' readonly >").css("border", "none");
+
+  eqQueTextarea.on("change", function() {
+    set.eqQue = $(this).val();
+  });
+
+  let trTag = $("<tr>").append(
+    $("<td>").append(eqNumberInput),
+    $("<td>").append(eqQueTextarea),
+    $("<td>").append(eqScoreInput),
+    tdTagEtNo,
+    tdTagEtQue,
+    tdTagEtRightAnswer
+  );
+
+  // set을 selectedValuesArray 배열에 추가
+  selectedValuesArray.push(set);
+
+  // addCnt 값에 따라 배점을 설정
+  if (addCnt > 0) {
+    let scorePerQuestion = 100 / addCnt;
+    eqScoreInput.val(scorePerQuestion);
+  }
+
+  return trTag;
+};
+
+
+// 등록 버튼을 누르면 비동기로 문제와 지문 insert
+let insertForm = $("#insertForm").on("submit", function(event) {
+   event.preventDefault();
+	
+	console.log("selectedValuesArray입니다:", selectedValuesArray);
+  
+	
+  	// ajax 요청
+  	$.ajax({
+  		url : `${$.CPATH}/exam/examQuetext.do`,
+  		type : "POST",
+  		data : JSON.stringify(selectedValuesArray), // 데이터 형식 JSON으로 변환
+  		dataType : "json",
+  		contentType : "application/json", // 요청 contentType을 JSON형식으로 변환
+  		success: function(response){
+  			console.log("요청에 성공했습니다", response);
+  			
+  			displayDiv.find(":input[name]").prop('disabled', true);
+  			$("#insertFormBtn").hide();
+  			
+  			Swal.fire({
+  				position : 'center',
+  				icon : 'success',
+  				title : '문제가 등록되었습니다',
+				showConfirmButton : false,
+				timer : 2500
+  			})
+  		},
+  		error: function(xhr, status, error){
+  			console.log("요청에 실패했습니다", error);
+  		}
+  		
+  		
+  	});
+  
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

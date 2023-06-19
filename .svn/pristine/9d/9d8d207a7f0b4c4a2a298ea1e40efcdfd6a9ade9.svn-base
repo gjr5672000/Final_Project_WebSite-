@@ -1,0 +1,67 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<security:authentication property="principal.realUser" var="authMember"/>
+<h1 style="color: white;" >
+	[${authMember.memName }] 교수의 00강의 홈
+</h1>
+<div class="space m-3 p-5">
+	<table class="table table-hover text-center">
+		<thead> 
+			<tr> 
+				<th>강의번호</th>
+				<th>교과목명</th>
+				<th>강의명</th>
+				<th>강의실</th>
+				<th>강의 시간</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach items="10" begin="1">
+			<tr>
+				<td>2023001</td>
+				<td>자바초급</td>
+				<td>초급 자바</td>
+				<td>B102호</td>
+				<td> 
+					<pre>
+						월요일 1교시
+						화요일 3교시
+					</pre>
+				</td>
+			</tr>
+			</c:forEach>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td>
+					끝!
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<div class="space m-3  p-5 text-center">
+	<div>
+		<h3>강의 관리 시작!</h3>
+	</div>
+	<br>
+	<div>
+		<a href="${cPath}/attendance" class="btn btn-success rounded-pill btn-lg">
+			출석
+		</a>
+		<a href="#" class="btn btn-danger rounded-pill btn-lg">
+			평가
+		</a>
+		<a href="#" class="btn btn-primary rounded-pill btn-lg">
+			과제
+		</a>
+		<a href="#" class="btn btn-secondary rounded-pill btn-lg">
+			시험
+		</a>
+		<a href="#" class="btn btn-info rounded-pill btn-lg">
+			휴/보강
+		</a>
+	</div>
+</div>

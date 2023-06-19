@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.lecture.dao.LectEvalDAO">
+	<select id="selectLectEvalArtiList" resultType="LectEvalArtiVO">
+		SELECT LEA_NO   
+		        , LEA_QUE
+		        , LEA_CONTENT
+		FROM LECT_EVAL_ARTI
+	</select>
+	<select id="selectCourse" resultType="LectureEvaluationVO" parameterType="LectureEvaluationVO">
+		SELECT COURSE_NO, LECT_NO, LECT_NAME, STU_NO
+	    FROM MEMBER_COURSE 
+	    WHERE LECT_NO = #{lectNo} AND STU_NO=#{stuNo}
+	    AND COURSE_CDATE IS NULL
+	</select>
+	
+	<insert id="insertLectEval" parameterType="LectureEvaluationVO">
+		INSERT ALL
+		<foreach collection="lectEvalList" item="lectEval" index="idx">
+			INTO LECT_EVAL (
+			    COURSE_NO,
+			    STU_NO,
+			    LEA_NO,
+			    LE_ANSWER
+			) VALUES (
+				#{courseNo,jdbcType=VARCHAR}
+				, #{stuNo,jdbcType=VARCHAR}
+				, #{lectEval.leaNo,jdbcType=VARCHAR}
+				, #{lectEval.leAnswer,jdbcType=VARCHAR}
+			) 
+		</foreach>
+		SELECT * FROM DUAL
+	</insert>
+</mapper>

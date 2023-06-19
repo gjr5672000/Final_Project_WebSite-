@@ -1,0 +1,28 @@
+package kr.or.ddit.asgn.vo;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+public class AsgnSubmitVO implements Serializable{
+	@NotBlank
+	private String asNo;
+	@NotBlank
+	private String asgnNo;
+	@NotBlank
+	private String courseNo;
+	@NotBlank
+	private String stuNo;
+	@NotBlank
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate asSdate;
+	@NotBlank
+	private String asContent;
+	@NotBlank
+	private Integer asScore;
+	private Integer asFile;
+}

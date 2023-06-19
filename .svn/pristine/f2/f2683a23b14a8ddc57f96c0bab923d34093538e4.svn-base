@@ -1,0 +1,97 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+  <!-- ~~~~~~~~~~~~~~~전체 div~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~~~~그리드스택 툴 영역~~~~~~~~~~~~~~~~~~ -->
+    <div class="col-md-2" >
+      <div id="trash" style="padding: 5px; margin-bottom: 15px;" class="text-center">
+        <div>
+          <ion-icon name="trash-outline" style="font-size: 500%;"></ion-icon>
+        </div>
+      </div>
+      <div class="newWidget grid-stack-item">
+        <div class="grid-stack-item-content" style="padding: 5px;" >
+          <div class="text-center">
+            <ion-icon name="add-circle-sharp" style="font-size: 500%"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ~~~~~~~~~~~~~~~~~~그리드스택 툴 영역 끝~~~~~~~~~~~~~~~~~~ -->
+    <!-- ~~~~~~~~~~~~~~~메인 대시보드 영역~~~~~~~~~~~~~~~ -->
+	<!-- 컬럼영역을 12개로 쪼갬. 제일 작은거 한줄에 12개까지 가능 -->
+    <div class="col-sm-12">
+    
+		<!-- ~~~~~그리드스택 시작~~~~~ -->
+		<div class="grid-stack" id="gridStackDiv">
+			<!-- ~~~~~~리스트 영역~~~~~~ -->
+			<div
+				class="grid-stack-item ui-draggable ui-resizable ui-resizable-autohide"
+				gs-x="0" gs-y="0" gs-w="12" gs-h="4" gs-locked="true">
+				<div class="grid-stack-item-content p-4" id="subjectListDiv">
+					<table class="table table-hover text-center">
+						<thead class="table-primary">
+							<tr>
+								<th>번호</th>
+								<th>단과대학명</th>
+								<th>학과명</th>
+								<th>교과목명</th>
+								<th>교과목유형명</th>
+							</tr>
+						</thead>
+						<tbody id="listBody" data-view-url="${cPath}/subject/subjectView.do">
+						
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="5">
+									<div class="pagingArea d-flex justify-content-center">
+									
+									</div>
+									<div id="searchUI" class="row d-flex justify-content-center">
+										<div class="col-auto">	
+											<select name="searchType" class="form-control">
+												<option value>전체</option>
+												<option value="subjectName">과목명</option>
+												<option value="subjectExp">과목설명</option>
+											</select>
+										</div>
+										<div class="col-auto">	
+											<input type="text" name="searchWord"  class="form-control col-auto" />
+										</div>
+										
+										<security:authorize access="hasAnyRole('PRO')">
+											<div class="col-auto">	
+												<input type="button" value="검색" id="searchBtn" class="btn btn-primary"/>
+												<a href="javascript:fn_CreateSubjectInsert()" class="btn btn-secondary">등록</a>
+											</div>
+										</security:authorize>
+									</div>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+					<form name="searchForm" method="post">
+						<security:csrfInput/>
+						<input type="hidden" name="page" placeholder="page"/>
+						<input type="hidden" name="searchType" placeholder="searchType"/>
+						<input type="hidden" name="searchWord" placeholder="searchWord"/>
+					</form>
+				</div>
+				<div class="ui-resizable-handle ui-resizable-se"
+				style="z-index: 100; user-select: none;"></div>
+			</div>
+			<!-- ~~~~~~~~~리스트 영역 끝~~~~~~~~~ -->
+	
+	</div>
+		<!-- ~~~~~그리드스택 끝~~~~~ -->
+    </div>
+    <!-- ~~~~~~~~~~~~~~~메인 대시보드 영역끝~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~~전체 div끝~~~~~~~~~~~~~~~ -->
+  <!-- ~~~~~~~~~~~~~~ cPath JS파일로 가져가기~~~~~~~~~~~~~~~ -->
+  <input type="hidden" id="cPath" value="${cPath}" />
+  <!-- ~~~~~~~~~~~~~~ JS파일 연결~~~~~~~~~~~~~~~ -->
+  <script src="${cPath }/resources/js/subject/subjectManagement.js"></script>

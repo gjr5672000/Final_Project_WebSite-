@@ -1,0 +1,18 @@
+package kr.or.ddit.student.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.student.vo.StudentVO;
+import kr.or.ddit.vo.Pagination;
+
+public interface StudentService {
+	public int createStudent(StudentVO student);
+	
+	public String retrieveStudentNoForDept(Map<String, String> param);
+	
+	public List<StudentVO> retrieveStudentList(Pagination<StudentVO> pagination);
+//	retrieveStudent
+//	modifyStudent
+//	removeStudent
+}

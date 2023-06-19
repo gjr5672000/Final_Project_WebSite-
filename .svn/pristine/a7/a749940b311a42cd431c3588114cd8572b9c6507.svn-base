@@ -1,0 +1,47 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<h1 style="color: white;">hi, 학생? 여긴 강의 과제 목록창이야.</h1>
+<div class="space m-3 p-5">
+	<form name="listForm">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>과제번호</th>
+					<th>과제명</th>
+					<th>과제등록일자</th>
+					<th>과제마감일자</th>
+					<th>제출여부</th>
+				</tr>
+			</thead>
+			<tbody id="asgnBody">
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>??</td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
+</div>
+
+<script>
+// ajax로 비동기 요청보내기
+let listForm = $("[name=listForm]").on("submit", function(event){
+	event.preventDefault();
+	let url = this.action;
+	let method = this.method;
+	$.ajax({
+		url : url,
+		method : method,
+		dataType : "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		console.log(resp);
+		
+		
+	});
+	return false;
+}).submit();
+
+// 요청결과 : asgnList
+// asgnBody에 태그 생성해서 넣기 
+</script>

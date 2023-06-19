@@ -1,0 +1,56 @@
+package kr.or.ddit.attendance.vo;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotBlank;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.attatch.vo.AttatchFileGroupVO;
+import kr.or.ddit.attatch.vo.AttatchFileVO;
+import kr.or.ddit.validate.DeleteGroup;
+import kr.or.ddit.validate.UpdateGroup;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Data
+@EqualsAndHashCode(of="aaNo")
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class AttendanceAdmitVO implements Serializable {
+	@NotBlank(groups = {UpdateGroup.class, DeleteGroup.class})
+	private String aaNo;
+	@NotBlank
+	private String attendNo;
+	@NotBlank
+	private String courseNo;
+	@NotBlank
+	private String stuNo;
+	@NotBlank
+	private String aaReason;
+	@NotBlank
+	private String aaState;
+	
+	private MultipartFile[] aaFiles;
+	public void setAaFiles(MultipartFile[] aaFiles) {
+		if(aaFiles == null || aaFiles.length == 0) return;
+		this.aaFiles = aaFiles;
+		
+		this.atchFileGourp = new AttatchFileGroupVO();
+		atchFileGourp.setAtchfileList(
+			Arrays.stream(aaFiles)
+					.filter((mf)->!mf.isEmpty())
+					.map((mf)->new AttatchFileVO(mf))
+					.collect(Collectors.toList())
+		);
+	}
+	private AttatchFileGroupVO atchFileGourp;
+	
+	private Integer aaFile;
+}

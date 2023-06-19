@@ -1,0 +1,89 @@
+/**
+ * 
+ */
+let listBody = $("#listBody");
+let viewUrl = listBody.data("viewUrl");
+let pagingArea = $(".pagingArea");
+let fn_makeTr = function(board){
+	let aTag = $("<a>").attr("href", `${viewUrl}?what=${board.memName}`)
+						.html(`${board.memName}`);
+						
+				
+	return $("<tr>").append(
+		$("<td>").html(aTag)		
+		, $("<td>").html(board.asContent)			
+		, $("<td>").html(board.asSdate)
+		, $("<td>").html(board.asScore)
+		, $("<td>").append($("<a>").addClass("btn-link text-decoration-none")
+				.attr({"data-bs-toggle":"modal",
+					   "data-bs-target":"#updateScoreModal"
+						})
+				.text("점수입력").on("click",function(){
+					
+					let data = JSON.stringify($("#updateScoreForm").serializeObject());
+					
+					$.ajax({
+						url : $.CPATH+"/asgn/updateScore.do"
+						, method: "post"
+						, data : data
+						, dataType : "json"
+						, contentType : "application/json"
+					}).done((resp, textStatus, jqXHR) => {
+					
+						console.log("resp", resp);
+					})
+			})
+		)
+	);
+}
+let updateScoreModal = $("#updateScoreModal").on("hidden.bs.modal", function(event) {
+   error.empty();
+
+   // form에 input reset 시키기
+   updateScoreForm[0].reset();
+})
+
+let searchForm = $("[name=searchForm]").on("submit", function(event){
+	event.preventDefault();
+	let url = this.action;
+	let method = this.method;
+	let data = $(this).serialize();
+	$.ajax({
+		url : url,
+		method : method,
+		data : data,
+		dataType : "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		listBody.empty();
+		pagingArea.empty();
+		
+		let trTags = [];
+		if(resp.dataList.length > 0){
+			$.each(resp.dataList, function(idx, board){
+				trTags.push( fn_makeTr(board) );
+			});
+			pagingArea.html(resp.pagingHTML);
+		}else{
+			trTags.push($("<tr>").html($("<td colspan='3'>").html("학생 없음.")));
+		}
+		listBody.append(trTags);
+	});
+	return false;
+}).submit();
+let searchUI = $("#searchUI").on("click", "#searchBtn" , function(){
+	$(this).parents("#searchUI").find(":input[name]").each(function(idx, input){
+		let iptName = input.name;
+		let iptValue = $(input).val();
+		searchForm.find(`[name=${iptName}]`).val(iptValue);
+	});
+	searchForm.submit();
+});
+let fn_paging = function(page, event){
+	searchForm.find("[name=page]").val(page);
+	searchForm.submit();
+	searchForm.find("[name=page]").val("");
+	return false;
+}
+
+
+

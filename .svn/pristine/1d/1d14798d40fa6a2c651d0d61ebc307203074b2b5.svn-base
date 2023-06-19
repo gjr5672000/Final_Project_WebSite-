@@ -1,0 +1,8 @@
+package kr.or.ddit.license.vo;
+
+import lombok.Data;
+
+@Data
+public class LicenseAcqsVO {
+
+}

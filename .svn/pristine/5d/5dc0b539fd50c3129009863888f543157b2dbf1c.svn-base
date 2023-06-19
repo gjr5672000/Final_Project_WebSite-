@@ -1,0 +1,135 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+.tab-base .nav-tabs, .tab-base .nav-tabs .nav-link {
+	width: 50px;
+}
+
+.table-fixed {
+	width: 100%;
+	background-color: #f3f3f3;
+}
+
+tbody {
+	height: 200px;
+	overflow-y: auto;
+	width: 100%;
+}
+
+table {
+	border: 3px solid black;
+}
+td{
+	width: 100px;
+	height: 50px;
+}
+
+.tab-content {
+	height: 500px;
+	width: 1100px;
+	position: relative; /* This is new */
+}
+
+/* This is new */
+.d-flex.justify-content-end.mt-2 {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+}
+
+ion-icon {
+	font-size: 64px;
+}
+
+button {
+	margin: 1px;
+}
+</style>
+<div class="col-md-12 mb-3">
+	<!-- Vertical tabs with base -->
+	<div class="tab-base tab-vertical">
+		<ul class="nav nav-tabs" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" data-bs-toggle="tab" data-bs-target="#_dm-verTabsHome" type="button" role="tab" aria-controls="home" aria-selected="true">홈</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" data-bs-toggle="tab" data-bs-target="#_dm-verTabsProfile" type="button" role="tab" aria-controls="profile" aria-selected="false">나의커리</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" data-bs-toggle="tab" data-bs-target="#_dm-verTabsContact" type="button" role="tab" aria-controls="contact" aria-selected="false">이달의 선배</button>
+			</li>
+		</ul>
+
+		<!-- Tabs content -->
+		<div class="tab-content">
+			<div id="_dm-verTabsHome" class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab">
+				<div class="row" id="myTest" style="display: grid; grid-template-columns: repeat(8, 1fr);"></div>
+				<div id="_dm-verTabsHome" class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab">
+					<div class="row" id="myTest" style="display: grid; grid-template-columns: repeat(8, 1fr);"></div>
+					<!-- Buttons -->
+					<!-- Buttons -->
+					<div class="d-flex justify-content-end mt-2">
+							<h1>나의 커리 명 :</h1>
+							<input type="text" id="curriName">
+							<button type="button" class="btn btn-sucess" id="saveBtn">저장</button>
+						<button type="button" class="btn btn-secondary" onclick="resetInputs()">취소</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr;">
+	<div style="display: grid; grid-template-columns: 1fr;">
+		<div class="space m-3 p-5">
+			<div class="card">
+				<div class="card-body overflow-scroll scrollable-content" style="height: 200px;">
+					<table class="table table-hover text-center scrolltable table-fixed">
+						<thead>
+							<tr>
+								<th>교과목번호</th>
+								<th>학과명</th>
+								<th>단과대학명</th>
+								<th>교과목명</th>
+								<th>학년</th>
+								<th>학점</th>
+								<th>교과목유형</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody id="listBody" data-view-url="">
+						</tbody>
+						</div>
+						<tfoot>
+							<tr>
+								<td colspan="6">
+									<div id="searchUI" class="row d-flex justify-content-center">
+										<div class="col-auto">
+											<select name="searchType" class="form-control">
+												<option value>전체</option>
+												<option value="name">과제명</option>
+											</select>
+										</div>
+										<div class="col-auto">
+											<input type="text" name="searchWord" class="form-control col-auto" />
+										</div>
+										<div class="col-auto">
+											<input type="button" value="검색" id="searchBtn" class="btn btn-primary" />
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+		<form name="searchForm">
+			<input type="hidden" name="searchType" placeholder="searchType" /> <input type="hidden" name="searchWord" placeholder="searchWord" />
+		</form>
+		<input type="hidden" id="cPath" value="${cPath}" />
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+		<script src="${cPath}/resources/js/myCurri/myCurri.js"></script>
+		</script>

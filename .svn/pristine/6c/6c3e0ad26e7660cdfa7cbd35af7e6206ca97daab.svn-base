@@ -1,0 +1,302 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+.modal-backdrop {
+	/*    width : 0%; */
+	/*    height: 0%; */
+
+}
+
+.table-container {
+	display: flex;
+	align-items: start; /* 이를 통해 두 요소가 같은 수평 라인에서 시작하도록 합니다 */
+	justify-content: flex-start; /* 이를 통해 두 요소가 왼쪽에서 시작하도록 합니다 */
+	gap: 10px; /* 이는 두 요소 사이의 간격을 설정합니다 */
+}
+
+.hover-darken:hover {
+	background-color: attr(color hover) !important;
+}
+
+.tab-base .nav-tabs, .tab-base .nav-tabs .nav-link {
+	width: 50px;
+}
+
+.table-fixed {
+	width: 100%;
+	background-color: #f3f3f3;
+}
+
+tbody {
+	height: 200px;
+	overflow-y: auto;
+	width: 100%;
+}
+
+.detailModal {
+	position: fixed;
+	width: 100%;
+	/* fixed일 때는 height:100% 동작 */
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	background-color: rgba(0, 0, 0, 0.274);
+	/* 무조건 크겡! */
+	z-index: 315;
+	display: none;
+}
+
+.card-header {
+	margin-right: 20px;
+}
+
+#subjectListBody {
+	background-color: white;
+	margin-right: 20px; /* Add this line */
+}
+
+#favorites {
+	background-color: white;
+	margin-left: 20px; /* Add this line */
+}
+
+.modalCont {
+	width: 400px;
+	height: 400px;
+	/* 수평 가운데 정렬 */
+	margin: 15% auto;
+	padding-left: 20px;
+	border-radius: 5%;
+	background-color: rgb(255, 255, 255);
+	color: rgb(9, 9, 8);
+}
+
+.modalSubmit {
+	margin-left: 230px;
+}
+
+.modalHead {
+	left: 10px;
+}
+
+.detailModalCont {
+	width: 700px;
+	height: 700px;
+	margin-top: 7%;
+	margin-left: 32%;
+	padding-left: 25px;
+	border-radius: 2%;
+	background-color: rgb(255, 255, 255);
+	color: rgb(9, 9, 8);
+}
+
+table {
+	border: 3px solid black;
+	border-collapse: collapse; /* 테이블 내 각 셀 사이의 간격을 없애기 위함 */
+}
+
+th, td {
+	padding: 0;
+}
+
+thead tr th, tbody tr td {
+	width: calc(100%/ 8); /* 수정된 부분 - 총 8개의 열이므로 각각 12.5%의 너비를 가지게 설정 */
+}
+
+tbody {
+	height: 200px;
+	overflow-y: auto;
+	width: 100%;
+}
+
+td {
+	width: 100px;
+	height: 50px;
+}
+
+.d-flex {
+	display: flex;
+}
+
+.tab-content {
+	height: 500px;
+	width: 1300px;
+	position: relative; /* This is new */
+	flex: 8;
+	margin-right: 20px;
+}
+
+.table {
+	flex: 3;
+}
+
+#curriList tbody {
+	overflow-y: auto !important;
+	max-height: 500px;
+}
+
+#curriTable {
+	height: 500px;
+	background-color: white;
+	text-align: center;
+}
+
+#curriTable td {
+	height: 50px;
+}
+
+ion-icon {
+	font-size: 64px;
+}
+
+button {
+	margin: 1px;
+}
+</style>
+<!-- 일정을 클릭하면 나오는 모달 -->
+<div id="detailModal" class="detailModal">
+	<div id="detailModalCont" class="detailModalCont">
+		<div id="modalHead" class="card-header toolbar">
+			<div class="toolbar-start" style="font-size: 15px;">교과목 정보</div>
+			<div class="toolbar-end">
+				<button onclick="detailModalClose()">X</button>
+			</div>
+		</div>
+		<form action="${cPath}/selectSubjectList" method="post" id="detailForm">
+			<div class="modalInput">
+				<input type="text" id="scdNo" class="form-control" value=""> 과목명:&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" id="sName" class="form-control" value="" readonly="readonly" /> 커리명:<input type="text" id="scurriNo" class="form-control" value="" readonly="readonly" /> 클래스명:<input type="text" id="scdPriority" class="form-control" value="" readonly="readonly" /> 설명: <input type="text" id="subExp" class="form-control" value="" readonly="readonly" /> 학점: <input type="text" id="subGrade" class="form-control" value="" readonly="readonly" /> 시간: <input type="text" id="subHours" class="form-control" value="" readonly="readonly" /> 학점: <input type="text" id="subScr" class="form-control" value="" readonly="readonly" /> 단과 대학명: <input type="text" id="colName" class="form-control" value="" readonly="readonly" /> 교과목 유형: <input type="text" id="commName" class="form-control" value="" readonly="readonly" />
+			</div>
+		</form>
+		<div class="toolbar-end" style="margin-left: auto;">
+			<button class="btn btn-danger" id="updateButton">수정</button>
+			<button class="btn btn-danger" onclick="remove()">삭제</button>
+		</div>
+	</div>
+</div>
+
+
+<div class="col-md-12 mb-3">
+	<!-- Vertical tabs with base -->
+	<div class="tab-base tab-vertical">
+		<!-- Tabs content -->
+		<div class="d-flex">
+			<div class="tab-content">
+				<div id="_dm-verTabsHome" class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab">
+					<div class="row" id="myTest" style="display: grid; grid-template-columns: repeat(8, 1fr);">
+						<!-- Buttons -->
+						<!-- Buttons -->
+					</div>
+				</div>
+				<div class="d-flex justify-content-end mt-2">
+					<input type="text" id="curriName" class="form-control">
+					<button type="button" class="btn btn-outline-success" id="saveBtn">저장</button>
+					<button type="button" class="btn btn-outline-dark" onclick="resetInputs()">취소</button>
+				</div>
+			</div>
+			<table class="table table-hover text-center scrolltable table-fixed" id="curriTable">
+				<thead>
+					<tr>
+						<th colspan="3" style="background-color: white; text-align: center;">나의 커리 목록</th>
+					</tr>
+					<tr>
+						<th>번호</th>
+						<th>커리이름</th>
+						<th>날짜</th>
+						<th>삭제</th>
+						<!-- More columns as needed -->
+					</tr>
+				</thead>
+				<tbody id="curriList">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div style="display: grid; grid-template-columns: 1fr;">
+	<div style="display: grid; grid-template-columns: 1fr;">
+		<div class="space m-3 p-5">
+			<div class="card">
+				<div class="table-container">
+					<div style="flex: 5;">
+						<h1 style="text-align: center;">교과목 리스트(학생)</h1>
+						<table id="subjectclickList" class="table table-hover text-center scrolltable table-fixed">
+							<thead>
+								<tr>
+									<th>번호</th>
+									<th>학과명</th>
+									<th>과목명</th>
+									<th>유형</th>
+									<th>학년</th>
+									<th>학점</th>
+									<th>시수</th>
+									<th>추가</th>
+								</tr>
+							</thead>
+						</table>
+						<div id="subjectListDiv" style="height: 200px; overflow: auto;">
+							<table class="table table-hover text-center scrolltable table-fixed">
+								<tbody id="subjectListBody" data-view-url="">
+								</tbody>
+							</table>
+						</div>
+						<div id="searchUI" class="row d-flex justify-content-center">
+							<div class="col-auto">
+								<select name="searchType" class="form-control">
+									<option value>전체</option>
+									<option value="name">과제명</option>
+								</select>
+							</div>
+							<div class="col-auto">
+								<input type="text" id="searchInputSubject" class="form-control col-auto" />
+							</div>
+							<div class="col-auto">
+								<input type="button" value="검색" id="searchBtn" class="btn btn-primary" />
+							</div>
+						</div>
+					</div>
+					<div style="flex: 5;">
+						<h1 style="text-align: center;">즐겨 찾기(학생)</h1>
+						<table id="favoriteclickList" class="table table-hover text-center scrolltable table-fixed">
+							<thead>
+								<tr>
+									<th>번호</th>
+									<th>학과명</th>
+									<th>과목명</th>
+									<th>유형</th>
+									<th>학년</th>
+									<th>학점</th>
+									<th>시수</th>
+									<th>추가</th>
+								</tr>
+							</thead>
+						</table>
+						<div id="subjectListDiv" style="height: 200px; overflow: auto;">
+							<table class="table table-hover text-center scrolltable table-fixed">
+								<tbody id="favorites" data-view-url="">
+								</tbody>
+							</table>
+						</div>
+						<div id="searchUI" class="row d-flex justify-content-center">
+							<div class="col-auto">
+								<select name="searchType" class="form-control">
+									<option value>전체</option>
+									<option value="name">과제명</option>
+								</select>
+							</div>
+							<div class="col-auto">
+								<input type="text" id="searchInputFavorite" class="form-control col-auto" placeholder="교과목명 검색" />
+							</div>
+							<div class="col-auto">
+								<input type="button" value="검색" id="searchBtn" class="btn btn-primary" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<form name="searchForm">
+	<input type="hidden" name="searchType" placeholder="searchType" /> <input type="hidden" name="searchWord" placeholder="searchWord" />
+</form>
+<input type="hidden" id="cPath" value="${cPath}" />
+<script src="${cPath}/resources/js/myCurri/myCurri.js"></script>

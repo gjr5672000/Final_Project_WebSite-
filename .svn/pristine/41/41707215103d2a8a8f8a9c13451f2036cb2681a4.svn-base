@@ -1,0 +1,65 @@
+package kr.or.ddit.student.vo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.groups.Default;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
+import kr.or.ddit.member.vo.MemberVO;
+import kr.or.ddit.validate.DeleteGroup;
+import kr.or.ddit.validate.LoginGroup;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
+@EqualsAndHashCode(callSuper = true, of = "stuNo")
+@ToString
+public class StudentVO extends MemberVO {
+	private int rnum;
+	
+	@NotBlank(groups = {Default.class, DeleteGroup.class, LoginGroup.class})
+	private String stuNo;
+	@NotBlank
+	private String deptNo;
+	private String deptName;
+	@NotBlank
+	private String colNo;
+	private String colName;
+	@NotBlank
+	private String drNo;
+	@NotBlank
+	private String stuState;
+	
+	@NotBlank
+	@DateTimeFormat(iso = ISO.DATE)
+	@JsonFormat(shape = Shape.STRING)
+	private LocalDate stuEdate;
+	
+	@DateTimeFormat(iso = ISO.DATE)
+	@JsonFormat(shape = Shape.STRING)
+	private LocalDate stuGdate;
+	
+	@NotBlank
+	private String stuEmploy;
+	
+	
+	private List<ActivityVO> actList; // 활동 list
+	// 취득 자격증 list
+
+	// list<교과목vo> -> 수강과목 list
+	
+	@DateTimeFormat(iso = ISO.DATE)
+	@JsonFormat(shape = Shape.STRING)
+	private LocalDate empDate; // 취업일자
+	private String empPlace; // 취업처
+	
+	private int registerYear; // 학년
+}

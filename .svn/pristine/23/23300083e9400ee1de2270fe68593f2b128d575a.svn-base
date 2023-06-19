@@ -1,0 +1,178 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<security:authentication property="principal.realUser" var="authMember"/>
+<style>
+#cbTitle{
+	font-size: 25px;
+}
+.cke_textarea_inline {
+/*       border: 1px solid #ccc; */
+	border: none;
+	padding: 10px;
+	min-height: 300px;
+	background: #fff;
+	color: #000;
+}
+.cke_inner .cke_top {
+	display: none;
+}
+.spanTags{
+	border: 1.5px solid lightgray;
+	border-radius: 3px;
+	padding: 3px 8px;
+}
+.contentBorder{
+
+	border: 1px solid #ccc;
+}
+#contentDiv{
+	overflow: auto;
+}
+
+/* 나의 커리 가져오기 */
+#myCurriArea{
+	display: grid;
+	grid-template-columns:repeat(8, 1fr);
+	column-gap: 15px;
+	
+	width: 750px;
+	margin: 0 auto;
+}
+.curriTable {
+	border: white;
+}
+.curriDiv{
+ 	border: 1px solid #87ceeb75; 
+ 	border-radius: 5px; 
+ 	padding: 5px; 
+}
+
+</style>
+
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb mb-0">
+		<li class="breadcrumb-item"><a href="/">Main</a></li>
+		<li class="breadcrumb-item"><a href="${cPath }/curri/everyCurri">모두의 커리</a></li>
+		<li class="breadcrumb-item active" aria-current="page">상세보기</li>
+	</ol>
+</nav>
+<div class="space m-3 p-5">
+	<div class="m-5 p-5 contentBorder">
+		<div class="p-3 ">
+			<div class="mb-4">
+				<p id="cbTitle">${curriBoard.cbTitle }</p>
+			</div>
+			<div class="d-flex justify-content-end fs-5">
+				<p class="m-2" id="cbWriter">${curriBoard.memName }</p>
+				<p class="m-2">|</p>
+				<p class="m-2" id="cbWdate">${curriBoard.cbWdate }</p>
+			</div>
+		</div>
+		<div id="" class='d-flex flex-wrap gap-3 mt-3'>
+			<c:if test="${not empty curriBoard.tagList and curriBoard.tagList.get(0).tagNo ne null }">
+				<c:forEach items="${curriBoard.tagList }" var="tag">
+				
+					<span class="mt-2 text-nowrap spanTags link-info">#${tag.tagContent }</span>
+				</c:forEach>
+			
+			</c:if>
+		</div>
+		<div>
+			<hr>
+			<div id="myCurriArea" style="display: none;">
+				<jsp:include page="/WEB-INF/views/curri/everyCurri/myCurriArea.jsp"/>
+				<hr>
+			</div>
+		</div>
+		<div id="contentDiv" class="mt-2 mb-5">
+			<textarea class="ckeditor" wrap="hard" cols="80" id="contentArea" name="contentArea" rows="10">${curriBoard.cbContent}</textarea>
+		</div>
+		<hr>
+		<div class="text-end">
+			<c:if test="${authMember.memNo eq curriBoard.cbWriter }">
+				<input id="insertBtn" type="button" class="btn btn-success" value="수정">
+				<input id="deleteBtn" type="button" class="btn btn-success" value="삭제">
+			</c:if>
+		</div>
+		
+	</div>
+	
+	<div>
+		<form action="">
+			<div>
+				<input type="hidden" name="" value="">
+				<textarea rows="80" cols="10"></textarea>
+			</div>
+			<div>
+				<input type="submit">
+			</div>
+		</form>
+	</div>
+	
+	<div class="text-center">
+		<a href="${cPath }/curri/everyCurri" class="btn btn-outline-info me-3">목록</a>
+	</div>
+	<div>
+	</div>
+</div>  
+<script>
+
+// 날짜 가져오기
+ let cbWdate = $("#cbWdate");
+ cbWdate.text(cbWdate.text().replace('T', ' ').substring(0, 19));
+
+// CKEditor 가져오기
+//   for (key in CKEDITOR.instances) { CKEDITOR.instances[key].destroy(true); }
+
+  // The instanceReady event is fired when an instance of CKEditor 4 has finished
+  // its initialization.
+  var editor;
+   CKEDITOR.inline('contentArea',{
+    });
+  
+  CKEDITOR.on('instanceReady', function(ev) {
+		editor = ev.editor;
+		editor.setReadOnly(true);
+  });
+
+// 나의 커리 가져오기
+let myCurriArea = $("#myCurriArea");
+let curriTb = $(".curriTb");
+let fn_get_curri = () => {
+	
+	myCurriArea.hide();
+	let curriNo = "${curriBoard.curriNo}";
+	console.log("curriNo : ", curriNo);
+	if(curriNo=="") return false;
+	
+// 	console.log("커리있음");
+	myCurriArea.show();
+	
+	curriTb.text("");
+	curriTb.css("background", "none");
+	
+ 	$.ajax({
+		url:"${cPath}/curri/myCurri.do/curriDetailList",
+		method:"post",
+		data: {"curriNo":curriNo},
+		dataType:"json",
+		success:function(resp){
+			console.log("curri detail : ", resp);
+						
+			$.each(resp, function(idx, curri){
+				let priority = curri.cdPriority;
+				$(`.\${priority}`).css("background-color", "#ffc10769");
+// 				$(`.\${priority}`).css("background-color", "#f2f2f2");
+				$(`.\${priority}`).html(`<small>\${curri.subName}</small>`);
+			})
+						
+		}
+	});	
+	
+}
+fn_get_curri();
+</script>  
+
+

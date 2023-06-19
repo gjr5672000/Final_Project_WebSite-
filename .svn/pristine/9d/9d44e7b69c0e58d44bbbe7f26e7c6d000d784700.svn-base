@@ -1,0 +1,8 @@
+package kr.or.ddit.lecture.vo;
+
+public class LectureVO {
+// lecture 
+	// list <lecture week plan VO>
+	
+	// 강의 싱세시간, 강의실 -> List<강의시간VO> 
+}

@@ -1,0 +1,32 @@
+package kr.or.ddit.member.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.member.service.MemberService;
+import kr.or.ddit.member.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/member")
+public class SearchPasswdController {
+	
+	@Inject
+	private MemberService service;
+	
+	@PostMapping(value = "searchPasswd.do")
+	public String searchPasswd(@RequestBody MemberVO member) {
+		log.info("input : {}", member);
+		
+		ServiceResult result = service.searchPasswd(member);
+//		log.info("member : {}", member);
+		
+		return "";
+	}
+}

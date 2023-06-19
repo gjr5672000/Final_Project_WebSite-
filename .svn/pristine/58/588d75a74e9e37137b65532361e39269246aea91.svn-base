@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.asgn.dao.AsgnDAO">
+
+	<resultMap type="AsgnVO" id="asgnList" autoMapping="true">
+		<id column="ASGN_NO" property="asgnNo" />
+		<collection property="asgnSubmitList" ofType="AsgnSubmitVO" autoMapping="true"/>
+	</resultMap>
+
+	<select id="selectAsgnList" resultMap="asgnList" parameterType="string">
+		SELECT *
+		FROM ASGN A
+			LEFT OUTER JOIN ASGN_SUBMIT B ON A.ASGN_NO = B.ASGN_NO
+		WHERE LECT_NO = #{lectNo}
+	</select>
+</mapper>

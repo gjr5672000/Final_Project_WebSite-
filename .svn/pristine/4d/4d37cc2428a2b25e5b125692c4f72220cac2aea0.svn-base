@@ -1,0 +1,34 @@
+/**
+ * 
+ */
+// 상세검색 클릭 했는지 안했는지 여부
+var detailchk = false;
+let detailTr = $("#detailTr");
+detailTr.find("[name]").on("change", function(event){
+	
+	let iptName = this.name;
+	let iptValue = $(this).val();
+	
+	searchForm.find(`[name=${iptName}]`).val(iptValue);
+	
+	searchForm.submit();
+	
+})
+
+let detailBtn = $("#detailBtn").on("click", function(){
+	detailchk = !detailchk
+	
+	if(detailchk){
+		detailTr.show();
+	}else{
+		detailTr.hide();
+		
+		// 검색 조건 초기화
+		$("[name=lectNo]").val("");
+		
+		searchForm.submit();
+	}
+
+	
+	
+})

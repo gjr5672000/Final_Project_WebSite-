@@ -1,0 +1,77 @@
+package kr.or.ddit.attendance.controller;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.attendance.service.AttendanceService;
+import kr.or.ddit.attendance.vo.AttendanceVO;
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
+@Controller
+@RequestMapping
+public class AttendanceController {
+	
+	@Inject
+	private AttendanceService attendService;
+	
+//	@ModelAttribute("attendList")
+//	public List<AttendanceVO> attend(
+//			@RequestParam("what") String lectNo
+//	) {
+//		// spring form 태그 사용하기 위하여 모델 어트리부트 넘기기
+//		// 날짜는 현재 데이터 가져가도록
+//		AttendanceVO attend = new AttendanceVO();
+//		attend.setLectNo(lectNo);
+//		attend.setAttendDate(LocalDate.now());
+//		List<AttendanceVO> attendList = attendService.retrieveAttendanceStuList(attend);
+//		return attendList;
+//	}
+	
+	@GetMapping("/attendance.do")
+	public String getUI(
+			Model model
+			, @RequestParam("what") String lectNo
+	) {
+		//lectNo를 가지고 이동
+		model.addAttribute("lectNo", lectNo);
+		
+//		//attendvo에 lectNo와 현재 날짜를 담아 보낸다.
+//		AttendanceVO attendVO = new AttendanceVO();
+//		attendVO.setLectNo(lectNo);
+//		attendVO.setAttendDate(LocalDate.now());
+//		
+//		//검색결과를 받아 모델에 넣는다.
+//		List<AttendanceVO> attendList = attendService.retrieveAttendanceStuList(attendVO);
+//		model.addAttribute("attendList", attendList);
+
+		return "attendance/attendance";
+	}
+	
+	@PostMapping(value="/attendance/attendstuList.do", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public List<AttendanceVO> retrieveAttendStuList(
+			@RequestBody AttendanceVO attendVO 
+	) {
+		
+		log.info("다영: " + attendVO);
+		return attendService.retrieveAttendanceStuList(attendVO);
+		
+	}
+	
+	
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.attendance.dao.AttendanceDAO">
+	
+	<resultMap type="AttendanceVO" id="attendStu">
+		<id property="attendNo" column="ATTEND_NO"/>
+		<collection property="studentList" ofType="StudentVO" autoMapping="true" />
+	</resultMap>
+	
+	<select id="selectAttendanceStuList" resultMap="attendStu" parameterType="AttendanceVO">
+		WITH COURSEONE AS (
+		    SELECT COURSE_NO 
+		    FROM COURSE 
+		    WHERE LECT_NO = #{lectNo}
+		)
+		SELECT 
+			M.MEM_NO
+			, MEM_NAME
+			, M.DEPT_NAME
+			, M.MEM_EMAIL
+			, A.ATTEND_NO
+			, A.ATTEND_DATE
+			, A.ATTEND_STATE
+		FROM MEMBER_COURSE M
+		    LEFT OUTER JOIN ATTENDANCE A ON ( M.MEM_NO = A.STU_NO AND TO_CHAR(A.ATTEND_DATE) = #{attendDate} )
+		    AND M.COURSE_NO IN (SELECT COURSE_NO FROM COURSEONE)
+		WHERE M.COURSE_NO IN (SELECT COURSE_NO FROM COURSEONE)
+	</select>
+</mapper>

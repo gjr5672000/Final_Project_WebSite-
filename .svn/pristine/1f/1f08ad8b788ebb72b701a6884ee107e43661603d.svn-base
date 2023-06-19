@@ -1,0 +1,132 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<style>
+.tab-base .nav-tabs, .tab-base .nav-tabs .nav-link {
+	width: 50px;
+}
+</style>
+<div class="col-md-12 mb-3">
+
+	<!-- Vertical tabs with base -->
+	<div class="tab-base tab-vertical">
+		<ul class="nav nav-tabs" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" data-bs-toggle="tab"
+					data-bs-target="#_dm-verTabsHome" type="button" role="tab"
+					aria-controls="home" aria-selected="true">홈</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" data-bs-toggle="tab"
+					data-bs-target="#_dm-verTabsProfile" type="button" role="tab"
+					aria-controls="profile" aria-selected="false">나의커리</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" data-bs-toggle="tab"
+					data-bs-target="#_dm-verTabsContact" type="button" role="tab"
+					aria-controls="contact" aria-selected="false">이달의 선배</button>
+			</li>
+		</ul>
+
+		<!-- Tabs content -->
+		<div class="tab-content">
+			<div id="_dm-verTabsHome" class="tab-pane fade show active"
+				role="tabpanel" aria-labelledby="home-tab">
+				<h5 class="card-title">이것도 안바뀌나?</h5>
+				<p>상처를 치료해줄 사람 어디 없나 가만히 놔두다간 끊임없이 덧나 사랑도 사람도 너무나도 겁나 혼자인게 무서워 난
+					잊혀질까 두려워 상처를 치료해줄 사람 어디 없나 가만히 놔두다간 끊임없이 덧나 사랑도 사람도 너무나도 겁나 혼자인게
+					무서워 난 잊혀질까 두려워 언제나 외톨이 맘의 문을 닫고 슬픔을 등에 지고 살아가는 바보 두 눈을 감고 두 귀를 막고
+					캄캄한 어둠속에 내 자신을 가둬 365일 1년 내내 방황하는 내 영혼을 쫓아 키를 잡은Jack Sparrow 몰아치는
+					Hurricane 졸라매는 허리끈에 방향감을 상실하고 길을 잃은 소리꾼 내 안에 숨어 있는 또 다른 나와 싸워 그녀가
+					떠나갈때 내게 말했었지 너는 곁에 있어도 있는 게 아닌것 같다고 만지면 베어버리는 칼날같은 사람 심장이 얼어붙은 차가웠던
+					사랑 그래 1분 1초가 사는게 사는게 아냐 매일 매일이 너무나 두려워 M'aider 누가 날 좀 꺼내줘 언제나 외톨이
+					맘의 문을 닫고 슬픔을 등에 지고 살아가는 바보 두 눈을 감고 두 귀를 막고 캄캄한 어둠속에 내 자신을 가둬 언제나
+					외톨이 맘의 문을 닫고 슬픔을 등에 지고 살아가는 바보 두 눈을 감고 두 귀를 막고 캄캄한 어둠속에 내 자신을 가둬
+					아무도 모르게 다가온 이별에 대면했을때 또 다시 혼자가 되는게 두려워 외면했었네 꿈에도 그리던 지나간 시간이 다시금
+					내게로 되돌아오기를 바라며 간절한 맘으로 밤마다 기도했었네 시위를 당기고 내 손을 떠나간 추억의 화살이 머나먼 과녁을
+					향해서 한없이 빠르게 날아가 내게로 돌아와 달라고 내 손을 붙잡아 달라고 부르고 불러도 한없이 소리쳐 대봐도 아무런
+					대답이 없는 널 내 기억 속에서 너라는 사람의 존재를 완전히 지우려 끝없이 몸부림쳐 봐도 매일밤 꿈에서 그대가 나타나
+					흐르는 눈물을 닦아주는걸 나 어떡하라고 다 끄떡없다고 거짓말 하라고 더는 못 참겠다고 나도 아플 땐 아프다고 슬플땐
+					슬프다고 얼어 붙은 심장이 자꾸만 내게로 고자질해 정말로 끝이라고 정말로 괜찮다고 꾹 참고 참았던 눈물이 자꾸만 내게로
+					쏟아지네 상처를 치료해줄 사람 어디 없나 가만히 놔두다가 끊임없이 덧나 사랑도 사람도 너무나도 겁나 혼자인게 무서워 난
+					잊혀질까 두려워 상처를 치료해줄 사람 어디 없나 가만히 놔두다가 끊임없이 덧나 사랑도 사람도 너무나도 겁나 혼자인게
+					무서워 난 잊혀질까 두려워 언제나 외톨이 맘의 문을 닫고 슬픔을 등에 지고 살아가는 바보 두 눈을 감고 두 귀를 막고
+					캄캄한 어둠속에 내 자신을 가둬 언제나 외톨이 맘의 문을 닫고 슬픔을 등에 지고 살아가는 바보 두 눈을 감고 두 귀를
+					막고 캄캄한 어둠속에 내 자신을 가둬</p>
+			</div>
+			<div id="_dm-verTabsProfile" class="tab-pane fade" role="tabpanel"
+				aria-labelledby="profile-tab">
+				<h5 class="card-title">Profile tab</h5>
+				<p>Far far away, behind the word mountains, far from the
+					countries Vokalia and Consonantia, there live the blind texts.
+					Separated they live in Bookmarksgrove right at the coast of the
+					Semantics, a large language ocean. A small river named Duden flows
+					by their place and supplies it with the necessary regelialia.</p>
+			</div>
+			<div id="_dm-verTabsContact" class="tab-pane fade" role="tabpanel"
+				aria-labelledby="contact-tab">
+				<h5 class="card-title">Contact tab</h5>
+				<p>The quick, brown fox jumps over a lazy dog. DJs flock by when
+					MTV ax quiz prog. Junk MTV quiz graced by fox whelps. Bawds jog,
+					flick quartz, vex nymphs. Waltz, bad nymph, for quick jigs vex! Fox
+					nymphs grab quick-jived waltz. Brick quiz whangs jumpy veldt fox.</p>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr;">
+	<div style="display: grid; grid-template-columns: 1fr;">
+		<div class="space m-3 p-5">
+			<table class="table table-hover text-center">
+				<thead>
+					<tr>
+						<th>교과목번호</th>
+						<th>학과명</th>
+						<th>단과대학명</th>
+						<th>교과목명</th>
+						<th>학년</th>
+						<th>학점
+						<th>
+						<th>교과목유형
+						<th>
+					</tr>
+				</thead>
+				<tbody id="listBody" data-view-url="">
+
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="6">
+							<div id="searchUI" class="row d-flex justify-content-center">
+								<div class="col-auto">
+									<select name="searchType" class="form-control">
+										<option value>전체</option>
+										<option value="name">과제명</option>
+									</select>
+								</div>
+								<div class="col-auto">
+									<input type="text" name="searchWord"
+										class="form-control col-auto" />
+								</div>
+								<div class="col-auto">
+									<input type="button" value="검색" id="searchBtn"
+										class="btn btn-primary" />
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+</div>
+<form name="searchForm">
+	<input type="hidden" name="page" placeholder="page" /> <input
+		type="hidden" name="searchType" placeholder="searchType" /> <input
+		type="hidden" name="searchWord" placeholder="searchWord" />
+</form>
+<script>
+
+</script>

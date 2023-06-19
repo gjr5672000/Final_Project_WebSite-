@@ -1,0 +1,85 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<security:authentication property="principal.realUser" var="authMember" />
+<security:authorize access="hasRole('PRO')">
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb mb-0">
+		<li class="breadcrumb-item">&nbsp;&nbsp;&nbsp;&nbsp;<a href="${cPath}/">Main</a></li>
+		<li class="breadcrumb-item active" aria-current="page">성적</li>
+	</ol>
+</nav>
+</security:authorize>
+
+<div class="space m-3 p-5">
+<!-- <div class="card"> -->
+<!-- 	<div class="card-header"> -->
+<h4 class="card-header bg-primary text-white">성적 관리</h4>
+<!-- 	</div> -->
+<!-- 	<div class="card-body"> -->
+ <div class="float-start m-2">
+   <button class="btn btn-icon btn-xs m-2" id="detailBtn">
+	<ion-icon class="fs-1 md hydrated" width="16" height="16"  name="options-outline" role="img" aria-label="options outline"></ion-icon>
+	</button><br>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>        
+          <th class="th0">강의명</th>
+          <th class="th1">학번</th>
+          <th class="th2">이름</th>
+          <th class="th3">학과</th>
+          <th class="th4">중간고사</th>
+          <th class="th5">기말고사</th>
+          <th class="th6">과제</th>
+          <th class="th7">출석</th>
+          <th class="th8">총학점</th>
+        </tr>
+        <tr id="detailTr" style="display: none">
+        <td>
+        	<select name="lectNo">
+            <option value=""></option>
+            <c:forEach items="${lectureList }" var="lect">
+              <option value="${lect.lectNo }">${lect.lectName }</option>
+            </c:forEach>
+          </select>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </thead>
+    <tbody id="listBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">
+          <!-- <input type="submit"> -->
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+<nav id="pagingArea" class="text-align-center mt-5" aria-label="Table navigation"></nav>
+<form name="searchForm">
+  <input type="hidden" name="page" />
+  <input type="hidden" name="screenSize" />
+  <input type="hidden" name="searchType" />
+  <input type="hidden" name="searchWord" />
+
+  <input type="hidden" name="deptNo" />
+  <input type="hidden" name="stuYear" />
+  <input type="hidden" name="memGender" />
+  <input type="hidden" name="stuState" />
+</form>
+</div>
+
+<script src="${cPath }/resources/js/score/scoreList.js"></script>

@@ -1,0 +1,51 @@
+package kr.or.ddit.curri.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.curri.dao.MyCurriDAO;
+import kr.or.ddit.curri.vo.CurriDetailVO;
+import kr.or.ddit.curri.vo.CurriVO;
+import kr.or.ddit.curri.vo.CurriWrapper;
+import kr.or.ddit.member.vo.MemberVO;
+import kr.or.ddit.member.vo.MemberVOWrapper;
+import kr.or.ddit.subject.vo.SubjectVO;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class MyCurriServiceImpl implements MyCurriService {
+	@Inject
+	private MyCurriDAO mycurriDAO;
+
+	@Override
+	public List<SubjectVO> retrieveSubjectList() {
+		List<SubjectVO> subjectTotalList = mycurriDAO.subjectList();
+		return subjectTotalList;
+	}
+
+	@Override
+	public void createCurri(CurriWrapper curriWrapper) {
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    MemberVOWrapper memberwrapper = (MemberVOWrapper) authentication.getPrincipal();
+	    MemberVO realUser = memberwrapper.getRealUser();
+
+	    // Wrapper에서 CurriVO를 빼내어 작업
+	    CurriVO curri = curriWrapper.getCurri();
+	    curri.setCurriDesigner(realUser.getMemNo());
+	    mycurriDAO.insertMyCurri(curri); // 수정된 CurriVO를 사용
+
+	    // Wrapper에서 List<CurriDetailVO>를 빼내어 작업
+	    List<CurriDetailVO> curriDetails = curriWrapper.getCurriDetail();
+	    for(CurriDetailVO curriDetail : curriDetails) {
+	    	curriDetail.setCurriNo(curri.getCurriNo());
+	        mycurriDAO.insertCurriDetail(curriDetail);
+	    }
+	}
+
+}

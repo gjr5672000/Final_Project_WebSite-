@@ -1,0 +1,21 @@
+package kr.or.ddit.lecture.service;
+
+import java.util.List;
+
+import kr.or.ddit.lecture.vo.LectureVO;
+
+public interface LectureService {
+	/**
+	 * 개설된 강의 전체 리스트 조회
+	 * @param lecture (검색 조건)
+	 * @return
+	 */
+	public List<LectureVO> retrieveLectureList(LectureVO lecture);
+	
+	/**
+	 * 강의 상세 정보 조회
+	 * @param lectNo
+	 * @return
+	 */
+	public LectureVO retrieveLecture(String lectNo);
+}

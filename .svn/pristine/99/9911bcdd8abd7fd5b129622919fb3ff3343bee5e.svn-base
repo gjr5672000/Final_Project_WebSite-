@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.exam.dao.ExamDAO">
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- 강의별 시험리스트 보기 -->
+	<select id="selectExamList" resultType="ExamVO" parameterType="String">
+		SELECT
+		    EXAM_NO
+		    ,E.LECT_NO
+		    ,EXAM_NAME
+		    ,EXAM_DATE
+		    ,EXAM_TYPE
+		    ,EXAM_KIND
+		    ,EXAM_STIME
+		    ,EXAM_ETIME
+		    
+		    ,COMM_NO
+		    ,COMM_NAME
+		    
+		FROM EXAM E
+		LEFT OUTER JOIN COMM ON (COMM_NO = EXAM_KIND)
+		WHERE E.LECT_NO = #{lectNo}
+		ORDER BY EXAM_NO
+	</select>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- 시험 상세 보기 -->
+	<select id="selectExam" resultType="ExamVO" parameterType="String">
+		SELECT 
+			EXAM_NO
+			,E.LECT_NO
+		    ,EXAM_NAME
+		    ,EXAM_DATE
+		    ,EXAM_TYPE
+		    ,EXAM_KIND
+   		    ,EXAM_STIME
+		    ,EXAM_ETIME
+		    
+		    ,COMM_NO
+		    ,COMM_NAME
+		    
+		    ,LECT_NAME
+		    ,AY_YEAR
+		    ,AY_SEMESTER
+		FROM EXAM E
+		LEFT OUTER JOIN COMM ON (COMM_NO = EXAM_KIND)
+		LEFT OUTER JOIN LECTURE L ON (L.LECT_NO = E.LECT_NO)
+		WHERE EXAM_NO = #{examNo}    
+	</select>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- 시험 등록 -->
+	<insert id="insertExam" parameterType="ExamVO">
+		<selectKey order="BEFORE" resultType="String" keyProperty="examNo">
+			SELECT 'EX'||LPAD(EXAM_SEQ.NEXTVAL,3,0)
+			FROM DUAL
+		</selectKey>
+		INSERT INTO EXAM
+		(
+			EXAM_NO
+			,LECT_NO
+			,EXAM_NAME
+			,EXAM_DATE
+			,EXAM_TYPE
+			,EXAM_KIND
+		    ,EXAM_STIME
+		    ,EXAM_ETIME
+		)
+		VALUES(
+			 #{examNo,jdbcType=VARCHAR}
+			, #{lectNo,jdbcType=VARCHAR}
+			, #{examName,jdbcType=VARCHAR}
+			, #{examDate,jdbcType=DATE}
+			, #{examType,jdbcType=VARCHAR}
+			, #{examKind,jdbcType=VARCHAR}		
+			, #{examStime,jdbcType=VARCHAR}		
+			, #{examEtime,jdbcType=VARCHAR}		
+		)
+	</insert>
+			 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

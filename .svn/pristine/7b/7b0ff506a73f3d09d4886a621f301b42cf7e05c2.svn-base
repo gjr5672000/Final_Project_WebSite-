@@ -1,0 +1,42 @@
+package kr.or.ddit.attendance.vo;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import kr.or.ddit.student.vo.StudentVO;
+import kr.or.ddit.validate.UpdateGroup;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Data
+@EqualsAndHashCode(of="attendNo")
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@ToString
+public class AttendanceVO {
+	@NotBlank(groups = UpdateGroup.class)
+	private String attendNo;
+	@NotBlank
+	private String courseNo;
+	private String lectNo;
+	@NotBlank
+	private String stuNo;
+	@NotBlank(groups = UpdateGroup.class)
+	@DateTimeFormat(iso = ISO.DATE)
+	private LocalDate attendDate;
+	@NotBlank
+	private String attendState;
+	
+	private AttendanceAdmitVO attendanceAdmitVO; //has a관계
+	
+	private List<StudentVO> studentList;
+}

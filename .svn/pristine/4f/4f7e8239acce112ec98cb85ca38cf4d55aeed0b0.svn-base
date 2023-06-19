@@ -1,0 +1,27 @@
+package kr.or.ddit.student.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.student.dao.StudentDAO;
+import kr.or.ddit.student.vo.StudentVO;
+import kr.or.ddit.vo.Pagination;
+
+@Service
+public class StudentServiceImpl implements StudentService {
+
+	@Inject
+ 	private StudentDAO studentDAO;
+	
+	@Override
+	public List<StudentVO> retrieveStudentList(Pagination<StudentVO> pagination) {
+		pagination.setTotalRecord(studentDAO.selectTotalRecord(pagination));
+		List<StudentVO> studentList = studentDAO.selectStudentList(pagination);
+		pagination.setDataList(studentList);
+		return studentList;
+	}
+
+}

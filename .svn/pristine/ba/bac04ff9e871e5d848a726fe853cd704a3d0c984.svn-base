@@ -1,0 +1,60 @@
+package kr.or.ddit.sch.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.sch.vo.SchVO;
+import kr.or.ddit.vo.Pagination;
+
+@Mapper
+public interface SchDAO {
+//------------------------------------------------------------	
+	/**
+	 * 장학금 등록 기능
+	 * @param sch
+	 * @return
+	 */
+	public int insertSch(SchVO sch);
+	
+//------------------------------------------------------------
+	/**
+	 * 장학금 목록을 조회하는 기능
+	 * @param pagination
+	 * @return
+	 */
+	public List<SchVO> selectSchList(Pagination<SchVO> pagination);
+	
+//------------------------------------------------------------
+	/**
+	 * 전체 장학금 목록 수 
+	 * @param pagination
+	 * @return
+	 */
+	public int selectTotalRecord(Pagination<SchVO> pagination);
+	
+//------------------------------------------------------------
+	/**
+	 * 하나의 장학금 상세보기 기능
+	 * @param schNo
+	 * @return
+	 */
+	public SchVO selectSch(String schNo);
+	
+//------------------------------------------------------------
+	/**
+	 * 하나의 장학금 내용 수정 기능
+	 * @param sch
+	 * @return
+	 */
+	public int updateSch(SchVO sch);
+	
+//------------------------------------------------------------
+	/**
+	 * 하나의 장학금 삭제 기능
+	 * @param condition
+	 * @return
+	 */
+	public int deleteSch(SchVO condition);
+//------------------------------------------------------------
+}

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.sch.dao.SchDAO">
+	<sql id="searchFrag">
+		<where>
+			<if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
+				<choose>
+					<when test="simpleCondition.searchType eq 'name'">
+						INSTR(SCH_NAME, #{simpleCondition.searchWord}) > 0
+					</when>
+					<when test="simpleCondition.searchType eq 'content'">
+						INSTR(SCH_CONT, #{simpleCondition.searchWord}) > 0
+					</when>
+					<otherwise>
+						INSTR(SCH_NAME, #{simpleCondition.searchWord}) > 0
+						OR
+						INSTR(SCH_CONT, #{simpleCondition.searchWord}) > 0
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectTotalRecord" parameterType="Pagination" resultType="int">
+		SELECT COUNT(*)
+		FROM SCH
+		<include refid="searchFrag"/>
+	</select>
+	
+	<select id="selectSchList" parameterType="pagination" resultType="SchVO">
+	SELECT RNUM, A.*
+	FROM(
+		SELECT ROWNUM AS RNUM, 
+			SCH_NO,
+			SCH_NAME,
+			SCH_AMOUNT,
+			SCH_CONT,
+			SCH_REQ
+		FROM SCH	
+		ORDER BY SCH_NO DESC
+	)A
+	<![CDATA[
+			WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+		]]>
+	</select>
+	
+	<insert id="insertSch" parameterType="SchVO">
+		<selectKey order="BEFORE" resultType="string" keyProperty="schNo">
+			SELECT 'SCH' || LPAD(SCH_SEQ.NEXTVAL, 3, '0') AS SCH_SEQ_STRING FROM DUAL
+		</selectKey>
+			INSERT INTO SCH (
+			    SCH_NO,
+			    SCH_NAME,
+			    SCH_AMOUNT,
+			    SCH_CONT,
+			    SCH_REQ
+			) VALUES (
+			    #{schNo,jdbcType=VARCHAR},
+			    #{schName,jdbcType=VARCHAR},
+			    #{schAmount,jdbcType=NUMERIC},
+			    #{schCont,jdbcType=VARCHAR},
+			    #{schReq,jdbcType=VARCHAR}
+			)
+	</insert>
+	
+	
+	<select id="selectSch" resultType="SchVO" parameterType="String">
+		SELECT
+		    SCH_NO,
+	    	SCH_NAME,
+	    	SCH_AMOUNT,
+	    	SCH_CONT,
+	    	SCH_REQ
+		FROM
+	    	SCH
+	    WHERE
+	    	SCH_NO =#{schNo}
+ 	</select>  
+	  
+	<update id="updateSch" parameterType="SchVO">
+		UPDATE SCH
+		SET
+			SCH_NAME = #{schName}
+			, SCH_AMOUNT = #{schAmount}
+			, SCH_CONT = #{schCont}
+			, SCH_REQ = #{schReq}
+		WHERE SCH_NO = #{schNo}
+	</update>
+	
+	<delete id="deleteSch" parameterType="SchVO">
+		DELETE FROM SCH
+		WHERE SCH_NO =#{schNo}
+	</delete>
+	
+</mapper>	
+	  

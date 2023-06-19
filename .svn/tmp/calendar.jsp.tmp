@@ -1,0 +1,156 @@
+<<<<<<< .mine
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/security/tags"
+	prefix="security"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<meta name="_csrf" th:content="${_csrf.token}">
+<title>Calendar</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.0/main.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.0/main.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.0/locales/ko.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<link rel="stylesheet" href="${cPath}/resources/css/calendar/calendar.css" type="text/css">
+
+<script src='${cPath }/resources/js/dist/index.global.js'></script>
+<script src='${cPath }/resources/js/dist/ko.global.js'></script>
+</head>
+<body>
+	<!--  -->
+	<div class="myCalendarbody">
+		<div id="insertModal" class="insertModal">
+			<div id="insertModalCont" class="insertModalCont">
+				<div id="modalHead" class="card-header toolbar">
+					<div class="toolbar-start" style="font-size: 15px;">일정 추가</div>
+					<div class="toolbar-end">
+						<button onclick="insertModalClose()">X</button>
+					</div>
+
+				</div>
+				<div class="card-body toolbar">
+					<form id="insertForm" method="post">
+						<security:csrfInput />
+						<div class="modalInput">
+							제목:&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" id="title"
+								value="" class="">
+						</div>
+						<div class="modalInput">
+							시작일: <input type="datetime-local" id="sdate" value="">
+						</div>
+						<div class="modalInput">
+							종료일: <input type="datetime-local" id="edate" value="">
+						</div>
+						<div class="modalInput">
+							배경 색상: <input type="color" id="background-color" value="">
+						</div>
+						<div class="modalInput">
+							글씨 색상: <input type="color" id="text-color" value="">
+						</div>
+					</form>
+				</div>
+					<div class="toolbar-end" style="margin-left: auto;">
+						<input type="submit" class="btn btn-success" value="추가"
+							onclick="insert()"> <input type="reset"
+							class="btn btn-danger" value="취소">
+				</div>
+			</div>
+		</div>
+
+		<!-- 일정을 클릭하면 나오는 모달 -->
+		<div id="detailModal" class="detailModal">
+			<div id="detailModalCont" class="detailModalCont">
+				<div id="modalHead" class="card-header toolbar">
+					<div class="toolbar-start" style="font-size: 15px;">일정 정보</div>
+					<div class="toolbar-end">
+						<button onclick="detailModalClose()">X</button>
+					</div>
+				</div>
+				<form:form modelAttribute="calendar" action="${cPath}/calendarView"
+					method="post" id="insertForm" method="post">
+					<security:csrfInput />
+					번호:<input type="hidden" id="cid" value="">
+					<div class="modalInput">
+						제목:&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" id="ctitle"
+							value="">
+					</div>
+					<div class="modalInput">
+						시작일: <input type="datetime-local" id="csdate" value="">
+					</div>
+					<div class="modalInput">
+						종료일: <input type="datetime-local" id="cedate" value="">
+					</div>
+					<div class="modalInput">
+						배경 색상: <input type="color" id="cbackgroundColor" value="">
+					</div>
+					<div class="modalInput">
+						글씨 색상: <input type="color" id="ctextColor" value="">
+					</div>
+				</form:form>
+				<div class="toolbar-end" style="margin-left: auto;">
+					<button class="btn btn-success" onclick="modify()">일정수정</button>
+					<button class="btn btn-danger" onclick="remove()">일정삭제</button>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="space m-3 p-5">
+			<div class="card">
+				<div class="card-body">
+
+					<div class="d-md-flex gap-4">
+
+						<!-- Calendar sidebar -->
+						<div class="w-md-160px w-xl-200px flex-shrink-0 mb-3">
+							<div class="d-grid">
+								<button class="btn btn-primary" type="button"
+									onclick="insertModal.show()">개인 일정 추가</button>
+							</div>
+
+							<!-- Calendar - Checkboxes -->
+							<h5 class="mt-5 mb-3">캘린더 선택</h5>
+							<div class="form-check mb-3">
+								<input id="personal-calendar" class="form-check-label" type="radio" value=""  name="radio-stacked" checked>
+								<label for="_dm-checkbox1" class="form-check-label"> 개인 캘린더 </label>
+							</div>
+							<div class="form-check mb-3">
+								<input id="academic-calendar" class="form-check-label" type="radio" value=""  name="radio-stacked">
+								<label for="_dm-checkbox2" class="form-check-label"> 학사 캘린더
+								</label>
+							</div>
+							<!-- END : Calendar - Checkboxes -->
+							<!-- END : Calendar - Upcoming event -->
+
+						</div>
+						<!-- END : Calendar sidebar -->
+
+						<!-- Full calendar container -->
+						<div id='calendar-container' class="calendarCenter"
+							style="width: 1000%; width: 700px;">
+							<div id='calendar'></div>
+							<!-- 캘린더가 생성되는 곳-->
+						</div>
+					</div>
+					<!-- END : Full calendar container -->
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+<input type="hidden" id="cPath" value="${cPath}" />
+<script src="${cPath }/resources/js/calendar/calendar.js"></script>
+</body>
+</html>
+||||||| .r327568
+=======
+>>>>>>> .r327772

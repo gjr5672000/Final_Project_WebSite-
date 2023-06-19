@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.curri.dao.MyCurriDAO">
+	<sql id="searchFrag">
+		<where>
+			<if
+				test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
+				<choose>
+					<when test="simpleCondition.searchType eq 'title'">
+						INSTR(LD_TITLE, #{simpleCondition.searchWord}) > 0
+					</when>
+					<when test="simpleCondition.searchType eq 'content'">
+						INSTR(LD_CONTENT, #{simpleCondition.searchWord}) >
+						0
+					</when>
+					<otherwise>
+						INSTR(LD_TITLE, #{simpleCondition.searchWord}) > 0
+						OR
+						INSTR(LD_CONTENT, #{simpleCondition.searchWord}) > 0
+					</otherwise>
+				</choose>
+			</if>
+
+		</where>
+	</sql>
+
+	<select id="subjectList" parameterType="SubjectVO">
+		SELECT
+		A.SUB_NO,
+		B.DEPT_NAME,
+		C.COL_NAME,
+		A.SUB_NAME,
+		A.SUB_GRADE,
+		A.SUB_SCR,
+		C.COL_NAME
+		FROM SUBJECT A LEFT JOIN DEPARTMENT B ON (A.DEPT_NO=B.DEPT_NO)
+					   LEFT JOIN COLLEAGE C ON(A.COL_NO=C.COL_NO)
+					   LEFT JOIN COMM D ON(A.SUB_COMM=D.COMM_NO)
+	</select>
+
+	<insert id="insertMyCurri" parameterType="CurriVO">
+		<selectKey resultType="string" order="BEFORE" keyProperty="curriNo">
+			SELECT 'CR'||LPAD(MY_CURRI_SEQ.NEXTVAL,3,0)
+			FROM DUAL
+		</selectKey>
+		INSERT INTO CURRI
+		(
+		CURRI_NO,
+		CURRI_DESIGNER,
+		CURRI_NAME,
+		CURRI_RDATE
+		) VALUES(
+		#{curriNo,jdbcType=VARCHAR},
+		#{curriDesigner,jdbcType=VARCHAR},
+		#{curriName},
+		SYSDATE
+		)
+	</insert>
+	<insert id="insertCurriDetail" parameterType="CurriDetailVO">
+		INSERT INTO CURRI_DETAIL
+		(CD_NO,
+		SUB_NO,
+		CURRI_NO,
+		CD_PRIORITY
+		) VALUES(
+		#{cdNo},
+		#{subNo},
+		#{curriNo},
+		#{cdPriority}
+		)
+	</insert>
+</mapper>

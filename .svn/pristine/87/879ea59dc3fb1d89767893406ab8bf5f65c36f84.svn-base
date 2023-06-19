@@ -1,0 +1,62 @@
+package kr.or.ddit.sch.service;
+
+import java.io.Console;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.exception.PKNotFoundException;
+import kr.or.ddit.facility.vo.FacilityVO;
+import kr.or.ddit.sch.dao.SchDAO;
+import kr.or.ddit.sch.vo.SchVO;
+import kr.or.ddit.univBoard.vo.UnivBoardVO;
+import kr.or.ddit.vo.Pagination;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class SchServiceImpl implements SchService {
+	
+	@Inject
+	private SchDAO schDAO;
+	
+	@Override
+	public ServiceResult createSch(SchVO sch) {
+		int result = schDAO.insertSch(sch);
+		return result>0? ServiceResult.OK : ServiceResult.FAIL;
+	}
+
+	@Override // List<SchVO> return schList;
+	public List<SchVO> retrievSchList(Pagination<SchVO> pagination) {
+		pagination.setTotalRecord(schDAO.selectTotalRecord(pagination));
+		List<SchVO> schList = schDAO.selectSchList(pagination);
+		pagination.setDataList(schList);
+		return schList;
+	}
+
+	@Override
+	public SchVO retrieveSch(String schNo) {
+		return schDAO.selectSch(schNo);
+	}
+
+	@Override
+	public ServiceResult modifySch(SchVO sch)throws PKNotFoundException{
+		log.info("SchVO : {}", sch);
+		
+		int result = schDAO.updateSch(sch);
+		
+		if(result==0) {
+			throw new PKNotFoundException(sch.getSchNo());
+		}
+		return ServiceResult.OK;
+	}
+	@Override
+	public void removeSch(SchVO condition) {
+		SchVO saved = retrieveSch(condition.getSchNo());
+		int rowcnt = schDAO.deleteSch(condition);
+	}
+}

@@ -1,0 +1,20 @@
+package kr.or.ddit.curri.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.curri.vo.CurriBoardVO;
+import kr.or.ddit.vo.Pagination;
+
+@Mapper
+public interface CurriBoardDAO {
+	public int selectTotalRecord(Pagination<CurriBoardVO> pagination);
+	public List<CurriBoardVO> selectCurriBoardList(Pagination<CurriBoardVO> pagination);
+//	public CurriBoardVO selectCurriBoard(String cbNo);
+	
+	public int insertCurriBoard(CurriBoardVO curriBoard);
+	
+//	public int updateCurriBoard(CurriBoardVO curriBoard);
+//	public int deleteCurriBoard(String cbNo);
+}

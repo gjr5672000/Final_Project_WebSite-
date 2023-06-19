@@ -1,0 +1,53 @@
+package kr.or.ddit.asgn.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.asgn.vo.AsgnSubmitVO;
+import kr.or.ddit.asgn.vo.AsgnVO;
+import kr.or.ddit.vo.Pagination;
+
+/**
+ * 과제 DAO
+ * - 23.05.03 생성
+ * @author Lee Da Young
+ *
+ */
+@Mapper
+public interface AsgnDAO {
+	// ----------------- 학생 강의별 과제 관리 시작 ----------------- //
+	/**
+	 * 학생이 제출한 과제 하나를 조회하는 기능
+	 * @param asgnSubmit
+	 * @return
+	 */
+	public AsgnSubmitVO selectAsgnSubmit(AsgnSubmitVO asgnSubmit);
+	/**
+	 * 학생이 과제 하나를 제출하는 기능
+	 * @param asgnSubmit
+	 * @return
+	 */
+	public int insertAsgnSubmit(AsgnSubmitVO asgnSubmit);
+	/**
+	 * 학생이 제출한 과제를 삭제하는 기능
+	 * @param asgnSubmit
+	 * @return
+	 */
+	public int deleteAsgnSubmit(AsgnSubmitVO asgnSubmit);
+
+	// ----------------- 교수 강의별 과제 관리 시작 ----------------- //
+	/**
+	 * 강의별 과제 전체를 조회하는 기능
+	 * @return 
+	 */
+	public List<AsgnVO> selectAsgnList(Pagination<AsgnVO> asgn);
+	
+	/**
+	 * 과제 하나의 상세보기를 조회하는 기능
+	 * @param asgn
+	 * @return
+	 */
+	public AsgnVO selectAsgn(AsgnVO asgn);
+	
+}

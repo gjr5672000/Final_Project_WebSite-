@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.tutition.dao.TutitionDAO">
+	<sql id="searchFrag">
+	<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
+				<choose>
+					<when test="simpleCondition.searchType eq 'writer'">
+						INSTR(UB_WRITER, #{simpleCondition.searchWord}) > 0
+					</when>
+					<when test="simpleCondition.searchType eq 'content'">
+						INSTR(UB_CONTENT, #{simpleCondition.searchWord}) > 0
+					</when>
+					<otherwise>
+						INSTR(UB_WRITER, #{simpleCondition.searchWord}) > 0
+						OR
+						INSTR(UB_CONTENT, #{simpleCondition.searchWord}) > 0
+					</otherwise>
+				</choose>
+		</if>
+		  <if test="detailCondition neq null">
+	      	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.deptNo)">
+        		AND DEPT_NO = #{detailCondition.deptNo}
+        	</if>
+	      </if>
+	</trim>
+</sql>
+
+<resultMap type="TutiPayVO" id="tutipayMap" autoMapping="true">
+	<id property="tpNo" column="TP_NO"/>
+	<!-- 헤즈 어 관계 -->
+	<association property="atchFileGroup" javaType="AttatchFileGroupVO">
+	<!-- 하나의 그룹이다라는 걸 알기위해 atchId 이퀄 설정 확인  -->
+		<id property="atchId" column="ATCH_ID"/>
+		<!-- 헤즈 매니 관계 -->
+		<collection property="atchfileList" ofType="AttatchFileVO" autoMapping="true"/>
+	</association>
+</resultMap>
+		
+	
+	<select id="selectTotalRecord" parameterType="Pagination" resultType="int">
+		SELECT COUNT(*)
+		FROM TUITION_PAYMENT
+		<include refid="searchFrag" />
+	</select>
+	
+	<select id="selectTutiPayList" parameterType="Pagination" resultType="TutiPayVO">
+			SELECT B.*
+		FROM (
+			SELECT ROWNUM RNUM, A.*
+			FROM (
+				SELECT TP_NO,
+				       T.STU_NO,
+				       TUITION_NO,
+				       TP_DATE,
+				       TP_AMOUNT,
+				       TP_STATE,
+				       S.DEPT_NO,
+				       S.COL_NO,
+				       C.COL_NAME,
+				       D.DEPT_NAME,
+				       M.MEM_NO,
+				       M.MEM_NAME,
+				       M.MEM_TEL,
+				       R.SCH_REC_SEMESTER,
+				       R.SCH_REC_STATE,
+				       H.SCH_NAME,
+				       H.SCH_AMOUNT,
+				       H.SCH_CONT,
+				       H.SCH_NO,
+				       O.COMM_NO,
+				       O.COMM_NAME
+				       
+				   FROM TUITION_PAYMENT T
+				   LEFT OUTER JOIN STUDENT S ON (S.STU_NO = T.STU_NO)
+				   LEFT OUTER JOIN COLLEAGE C ON (C.COL_NO =S.COL_NO)
+				   LEFT OUTER JOIN DEPARTMENT D ON(D.DEPT_NO = S.DEPT_NO)
+				   LEFT OUTER JOIN MEMBER M ON(M.MEM_NO = S.STU_NO)
+				   INNER JOIN COMM O ON(O.COMM_NO = T.TP_STATE)
+				   INNER JOIN SCH_REC R ON(R.STU_NO = T.STU_NO)
+				   INNER JOIN SCH H ON(R.SCH_NO = H.SCH_NO)
+				<include refid="searchFrag" />	
+				ORDER BY TP_NO DESC
+				
+			) A
+		)B
+	<![CDATA[
+			WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+		]]>
+	</select>
+	
+	
+	<select id="selectTutiPayMemList"  parameterType="Pagination" resultType="TutiPayVO">
+		SELECT B.*
+		FROM (
+			SELECT ROWNUM RNUM, A.*
+			FROM (
+				SELECT TP_NO,
+				       T.STU_NO,
+				       TUITION_NO,
+				       TP_DATE,
+				       TP_AMOUNT,
+				       TP_STATE,
+				       S.DEPT_NO,
+				       S.COL_NO,
+				       C.COL_NAME,
+				       D.DEPT_NAME,
+				       M.MEM_NO,
+				       M.MEM_NAME,
+				       M.MEM_TEL,
+				       R.SCH_REC_SEMESTER,
+				       R.SCH_REC_STATE,
+				       H.SCH_NAME,
+				       H.SCH_AMOUNT,
+				       H.SCH_CONT,
+				       H.SCH_NO,
+				       O.COMM_NO,
+				       O.COMM_NAME
+				       
+				   FROM TUITION_PAYMENT T
+				   LEFT OUTER JOIN STUDENT S ON (S.STU_NO = T.STU_NO)
+				   LEFT OUTER JOIN COLLEAGE C ON (C.COL_NO =S.COL_NO)
+				   LEFT OUTER JOIN DEPARTMENT D ON(D.DEPT_NO = S.DEPT_NO)
+				   LEFT OUTER JOIN MEMBER M ON(M.MEM_NO = S.STU_NO)
+				   INNER JOIN COMM O ON(O.COMM_NO = T.TP_STATE)
+				   INNER JOIN SCH_REC R ON(R.STU_NO = T.STU_NO)
+				   INNER JOIN SCH H ON(R.SCH_NO = H.SCH_NO)
+				<include refid="searchFrag" />	
+				ORDER BY TP_NO DESC
+				WHERE M.MEM_NO = #{pageUser}
+			) A
+		)B
+		
+			<![CDATA[
+					WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+				]]>
+			</select>
+	
+	
+</mapper>

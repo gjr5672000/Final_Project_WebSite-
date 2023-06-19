@@ -1,0 +1,14 @@
+package kr.or.ddit.lecture.service;
+
+import java.util.List;
+
+import kr.or.ddit.lecture.vo.LectureDataVO;
+import kr.or.ddit.vo.Pagination;
+
+public interface LectureDataService {
+	//createLectureData
+	public List<LectureDataVO> retrieveLectureDataList(Pagination<LectureDataVO> pagination);
+//	retrieveLectureData
+//	modifyLectureData
+//	removeLectureData
+}

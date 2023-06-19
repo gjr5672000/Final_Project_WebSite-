@@ -1,0 +1,15 @@
+package kr.or.ddit.lecture.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/lecture/lectureHome.do")
+public class LectureController {
+
+	@GetMapping
+	public String getUI() {
+		return "lecture/lectureHome";
+	}
+}

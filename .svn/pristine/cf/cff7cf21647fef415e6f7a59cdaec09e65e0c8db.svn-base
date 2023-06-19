@@ -1,0 +1,24 @@
+package kr.or.ddit.score.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+/**
+ * 	점수 DAO
+ *  - 23.05.24 생성
+ * @author ShinYuCheol
+ *
+ */
+
+import kr.or.ddit.score.vo.CourseScoreDetailVO;
+@Mapper
+public interface ScoreDAO {
+	
+	/**
+	 * 강의별 학생 성적조회(중간고사,기말고사,출석,과제)
+	 * @param paramScore
+	 * @return
+	 */
+	public List<CourseScoreDetailVO> selectCourseScoreDetailList(String lectNo);
+}

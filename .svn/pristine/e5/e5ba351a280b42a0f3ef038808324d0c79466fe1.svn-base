@@ -1,0 +1,49 @@
+package kr.or.ddit.sch.service;
+
+import java.util.List;
+
+import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.sch.vo.SchVO;
+import kr.or.ddit.vo.Pagination;
+
+public interface SchService {
+//---------------------------------------------------------------	
+	/**
+	 * 장학금 등록 기능 
+	 * @param sch
+	 */
+	public ServiceResult createSch(SchVO sch);
+//---------------------------------------------------------------	
+	
+	/**
+	 * 장학금 목록을 나타내는 기능
+	 * @param pagination
+	 */
+	public List<SchVO> retrievSchList(Pagination<SchVO> pagination);
+	// void를 쓰는 이유와 안쓰는 이유??
+//---------------------------------------------------------------	
+	/**
+	 * 장학금 상세조회 기능
+	 * @param schNo
+	 * @return
+	 */
+	public SchVO retrieveSch(String schNo);
+//---------------------------------------------------------------
+	
+	/**
+	 * 장학금 등록내용 수정 기능
+	 * @param sch
+	 * @return
+	 */
+	public ServiceResult modifySch(SchVO sch);
+//---------------------------------------------------------------
+	
+	/**
+	 * 장학금 내용 삭제
+	 * @param condition
+	 */
+	public void removeSch(SchVO condition);
+//---------------------------------------------------------------	
+	
+
+}

@@ -1,0 +1,66 @@
+package kr.or.ddit.basket.vo;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
+import kr.or.ddit.lecture.vo.LectureTimePlaceVO;
+import lombok.Data;
+
+@Data
+public class BasketVO {
+	private String basketNo;
+	private String stuNo;
+	private String lectNo;
+	private String lectName;
+	
+	private String subCommName;
+	private Integer subGrade;
+	private Integer subScr;
+	
+	@DateTimeFormat(iso = ISO.DATE_TIME)
+	@JsonFormat(shape = Shape.STRING)	
+	private LocalDateTime basketRdate;
+	private String ltNo;
+	private String ltdNo;
+	private String ltdDay;
+	private String ltdPeriod;
+	private Integer lectMm;
+	private int basketNum;
+	
+	private List<LectureTimePlaceVO> lectDetailList; // 강의 상세 시간 리스트
+	// 강의 상세 시간 출력 (예-월 1 2, 수 6 7)
+	public String getLectTime(List<LectureTimePlaceVO> lectDetailList) {
+		if(ltNo==null||ltNo.isEmpty()) return "";
+		
+		StringBuffer lectDetailFormat = new StringBuffer();
+		
+		lectDetailFormat.append(lectDetailList.get(0).getLtdDay()+" ");
+		lectDetailFormat.append(lectDetailList.get(0).getLtdPeriod()+" ");
+		for(int i=1; i<lectDetailList.size(); i++) {
+			LectureTimePlaceVO vo = lectDetailList.get(i);
+			
+			if(!vo.getLtdDay().equals(lectDetailList.get(i-1).getLtdDay())) {
+				lectDetailFormat.append(", ");
+				lectDetailFormat.append(vo.getLtdDay()+" ");
+			}
+			lectDetailFormat.append(vo.getLtdPeriod()+" ");
+		}		
+		
+		return lectDetailFormat.toString();
+	}	
+	
+	private String lectTimeNum;
+
+	public String getLectTimeNum() {
+		if(ltNo==null||ltNo.isEmpty()) return "";
+		return lectDetailList.stream().map(vo->vo.getLtdNo()).collect(Collectors.joining(","));
+	}
+	
+}

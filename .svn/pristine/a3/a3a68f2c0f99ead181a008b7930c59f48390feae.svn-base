@@ -1,0 +1,21 @@
+package kr.or.ddit.curri.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.curri.service.MyCurriService;
+
+@Controller
+@RequestMapping("/curri/myCurri.do")
+public class MyCurriController {
+	@Inject
+	private MyCurriService service;
+
+	@GetMapping
+	public String getUI(){
+		return "curri/myCurri";
+	}
+}

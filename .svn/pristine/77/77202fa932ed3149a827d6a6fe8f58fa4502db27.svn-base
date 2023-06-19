@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.subject.dao.SubjectDAO">
+
+	<sql id="searchFrag">
+	FROM
+	    SUBJECT A INNER JOIN DEPARTMENT B ON (A.dept_no = B.dept_no)
+	    INNER JOIN COLLEAGE C ON (B.COL_NO = C.COL_NO)
+	    INNER JOIN COMM D ON (A.sub_comm = D.COMM_NO)
+	    INNER JOIN COMM E ON (A.sub_state = E.COMM_NO)
+		<where>
+			<if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
+				<choose>
+					<when test="simpleCondition.searchType eq 'subjectName'">
+						INSTR(SUB_NAME, #{simpleCondition.searchWord}) > 0
+					</when>
+					<when test="simpleCondition.searchType eq 'subjectExp'">
+						INSTR(SUB_EXP, #{simpleCondition.searchWord}) > 0
+					</when>
+					<otherwise>
+						INSTR(SUB_NAME, #{simpleCondition.searchWord}) > 0
+						OR
+						INSTR(SUB_EXP, #{simpleCondition.searchWord}) > 0
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</sql>
+<select id="selectTotalRecord" parameterType="Pagination" resultType="int">
+	SELECT COUNT(*)
+	<include refid="searchFrag" />
+</select>
+
+<select id="selectSubjectList" parameterType="Pagination" resultType="SubjectVO">
+SELECT G.*
+FROM (
+	SELECT ROWNUM RNUM, F.*
+	FROM (
+		SELECT
+		    SUB_NO,
+		    A.DEPT_NO,
+		    A.COL_NO,
+		    SUB_NAME,
+		    SUB_EXP,
+		    SUB_GRADE,
+		    SUB_HOURS,
+		    SUB_SCR,
+		    SUB_COMM,
+		    SUB_STATE,
+		    SUB_REASON,
+		    DEPT_NAME,
+		    COL_NAME,
+		    D.COMM_NAME "SUBCOMMNAME",
+		    E.COMM_NAME "SUBSTATENAME"
+		    <include refid="searchFrag" />
+			) F
+		) G
+		<![CDATA[
+			WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+		]]>
+</select>
+
+</mapper>

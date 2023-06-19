@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.tutition.dao.TutitionDAO">
+	<sql id="searchFrag">
+	<trim prefix="WHERE" prefixOverrides="AND">
+			<if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
+				<choose>
+					<when test="simpleCondition.searchType eq 'writer'">
+						INSTR(UB_WRITER, #{simpleCondition.searchWord}) > 0
+					</when>
+					<when test="simpleCondition.searchType eq 'content'">
+						INSTR(UB_CONTENT, #{simpleCondition.searchWord}) > 0
+					</when>
+					<otherwise>
+						INSTR(UB_WRITER, #{simpleCondition.searchWord}) > 0
+						OR
+						INSTR(UB_CONTENT, #{simpleCondition.searchWord}) > 0
+					</otherwise>
+				</choose>
+		</if>
+		  <if test="detailCondition neq null">
+	      	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.deptNo)">
+        		AND DEPT_NO = #{detailCondition.deptNo}
+        	</if>
+	      </if>
+	</trim>
+</sql>
+
+<resultMap type="TutiPayVO" id="tutipayMap" autoMapping="true">
+	<id property="tpNo" column="TP_NO"/>
+	<!-- 헤즈 어 관계 -->
+	<association property="atchFileGroup" javaType="AttatchFileGroupVO">
+	<!-- 하나의 그룹이다라는 걸 알기위해 atchId 이퀄 설정 확인  -->
+		<id property="atchId" column="ATCH_ID"/>
+		<!-- 헤즈 매니 관계 -->
+		<collection property="atchfileList" ofType="AttatchFileVO" autoMapping="true"/>
+	</association>
+</resultMap>
+		
+	
+	<select id="selectTotalRecord" parameterType="Pagination" resultType="int">
+		SELECT COUNT(*)
+		FROM TUITION_PAYMENT
+		<include refid="searchFrag" />
+	</select>
+	
+	<select id="selectTutiPayList" parameterType="Pagination" resultType="TutiPayVO">
+		SELECT B.*
+			FROM (
+		SELECT ROWNUM RNUM, A.*
+			FROM (
+				WITH MEM AS(
+			    SELECT MEM_NO ,MEM_NAME, DEPT_NAME, COL_NAME
+			    FROM MEMBER_COURSE
+			)
+          SELECT  DISTINCT 
+                  TP_NO,
+                   T.STU_NO,
+                   TUITION_NO,
+                   TP_STATE,
+                   M.COL_NAME,
+                   M.DEPT_NAME,
+                   M.MEM_NAME,
+                   R.SCH_REC_SEMESTER,
+                   O.COMM_NO,
+                   O.COMM_NAME
+				       
+				   FROM TUITION_PAYMENT T
+                   LEFT OUTER JOIN MEM M ON (T.STU_NO = M.MEM_NO)
+				   INNER JOIN COMM O ON(O.COMM_NO = T.TP_STATE)
+				   INNER JOIN SCH_REC R ON(R.STU_NO = T.STU_NO)
+				<include refid="searchFrag" />	
+				ORDER BY TP_NO DESC
+			) A
+		)B
+	<![CDATA[
+			WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+		]]>
+	</select>
+	
+	
+	<select id="selectTutiPayMemList"  parameterType="Pagination" resultType="TutiPayVO">
+	SELECT B.*
+		FROM (
+			SELECT ROWNUM RNUM, A.*
+			FROM (
+				WITH MEM AS(
+			    SELECT MEM_NO ,MEM_NAME, DEPT_NAME, COL_NAME
+			    FROM MEMBER_COURSE
+			)
+          SELECT  DISTINCT 
+                  TP_NO,
+                   T.STU_NO,
+                   TUITION_NO,
+                   TP_STATE,
+                   M.COL_NAME,
+                   M.DEPT_NAME,
+                   M.MEM_NAME,
+                   R.SCH_REC_SEMESTER,
+                   O.COMM_NO,
+                   O.COMM_NAME
+				       
+				   FROM TUITION_PAYMENT T
+                   LEFT OUTER JOIN MEM M ON (T.STU_NO = M.MEM_NO)
+				   INNER JOIN COMM O ON(O.COMM_NO = T.TP_STATE)
+				   INNER JOIN SCH_REC R ON(R.STU_NO = T.STU_NO)
+				<include refid="searchFrag" />	
+				WHERE M.MEM_NO = #{pageUser}
+			) A
+				ORDER BY TP_NO DESC
+		)B
+		
+			<![CDATA[
+					WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+				]]>
+			</select>
+			
+		<select id="selectTutiPay" resultType="TutiPayVO" parameterType="String">
+			WITH MEM AS(
+			    SELECT MEM_NO, MEM_NAME, DEPT_NAME,MEM_TEL,COL_NAME
+			    FROM MEMBER_COURSE
+			)
+			SELECT DISTINCT
+			    M.MEM_NAME, M.DEPT_NAME, 
+			    TP_NO,
+			    STU_NO,
+			    TUITION_NO,
+			    TP_DATE,
+			    TP_AMOUNT,
+			    TP_STATE,
+			    SCH_REC_SEMESTER,
+			    SCH_AMOUNT,
+			    COL_NAME,
+			    COMM_NO,
+			    COMM_NAME
+			FROM
+			    TUITION_PAYMENT T
+			    LEFT OUTER JOIN MEM M ON (T.STU_NO = M.MEM_NO)
+			    LEFT OUTER JOIN COMM C ON (T.TP_STATE = C.COMM_NO)
+			    INNER JOIN SCH_REC R ON(R.STU_NO = T.STU_NO)
+			    LEFT JOIN SCH S ON(S.SCH_NO = R.SCH_NO)
+			WHERE    
+				STU_NO = #{stuNo}
+		</select>
+		
+		
+			
+	<select id="selectTutiList" parameterType="Pagination" resultType="TuitionVO">
+		SELECT B.*
+			FROM (
+				SELECT ROWNUM RNUM, A.*
+					WITH MEM AS(
+		        SELECT MEM_NO ,MEM_NAME, DEPT_NAME, COL_NAME,STU_NO
+		        FROM MEMBER_COURSE
+			    )
+				SELECT DISTINCT
+				    TUITION_NO,
+				    TUITION_COL,
+				    TUITION_DEPT,
+				    TUITION_STU_NO,
+				    TUITION_NAME,
+				    TUITION_GRADE,
+				    TUITION_SEMESTER,
+				    TUITION_SCH_REC,
+				    TUITION_AMOUNT,
+				    TUITION_PAYMENT,
+				    M.COL_NAME
+				FROM
+				    TUITION T
+			    LEFT JOIN MEM M ON (M.STU_NO = T.TUITION_STU_NO);
+				<include refid="searchFrag" />	
+				ORDER BY TP_NO DESC
+			) A
+		)B
+	<![CDATA[
+			WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+		]]>
+	</select>
+	
+	
+	<select id="selectTutiMemList"  parameterType="Pagination" resultType="TuitionVO">
+	SELECT B.*
+		FROM (
+			SELECT ROWNUM RNUM, A.*
+			SELECT ROWNUM RNUM, A.*
+					WITH MEM AS(
+		        SELECT MEM_NO ,MEM_NAME, DEPT_NAME, COL_NAME,STU_NO
+		        FROM MEMBER_COURSE
+			    )
+				SELECT DISTINCT
+				    TUITION_NO,
+				    TUITION_COL,
+				    TUITION_DEPT,
+				    TUITION_STU_NO,
+				    TUITION_NAME,
+				    TUITION_GRADE,
+				    TUITION_SEMESTER,
+				    TUITION_SCH_REC,
+				    TUITION_AMOUNT,
+				    TUITION_PAYMENT,
+				    M.COL_NAME
+				FROM
+				    TUITION T
+			    LEFT JOIN MEM M ON (M.STU_NO = T.TUITION_STU_NO);
+				<include refid="searchFrag" />	
+				WHERE M.MEM_NO = #{pageUser}
+			) A
+				ORDER BY TP_NO DESC
+		)B
+		
+			<![CDATA[
+					WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+				]]>
+			</select>
+			
+
+</mapper>

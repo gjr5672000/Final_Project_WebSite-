@@ -1,0 +1,41 @@
+package kr.or.ddit.lecture.service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.lecture.dao.LectureDAO;
+import kr.or.ddit.lecture.vo.LectureVO;
+
+@Service
+public class LectureServiceImpl implements LectureService {
+
+	@Inject
+	private LectureDAO lectDAO;
+	
+	@Override
+	public List<LectureVO> retrieveLectureList(LectureVO lecture) {
+		
+		// 수정해야 함.
+		lecture.setAyYear(2023);
+		lecture.setAySemester(1);
+		
+		List<LectureVO> lectList = lectDAO.selectLectureList(lecture);
+		
+		return lectList;
+	}
+
+	@Override
+	public LectureVO retrieveLecture(String lectNo) {
+		
+		LectureVO lect = lectDAO.selectLecture(lectNo);
+		
+		if(lect==null) throw new RuntimeException();
+		return lect;
+	}
+
+}

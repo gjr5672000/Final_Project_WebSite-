@@ -1,0 +1,45 @@
+/**
+ * 
+ */
+ let facilityResBody = $("#facilityResBody");
+ let viewUrlIni = facilityResBody.data("viewUrl");
+ let cPath = facilityResBody.data("cpath");
+ 
+ 
+let fn_makeTr = function(facility){
+	
+	/* 개인별예약현황 리스트 */
+	return $("<tr>").append(
+		$("<td>").html(facility.rnum)
+		, $("<td>").html(facility.frNo)
+		, $("<td>").html(facility.faciNo)
+		, $("<td>").html(facility.frDate)
+		, $("<td>").html(facility.commName)
+		
+	);
+}
+/* ajax로 비동기 요청보내기 */
+let listForm = $("[name=listForm]").on("submit", function(event){
+	event.preventDefault();
+	let url = this.action;
+	let method = this.method;
+	$.ajax({
+		url : url,
+		method : method,
+		dataType : "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		console.log(resp);
+		facilityResBody.empty();
+
+		let trTags = [];
+		if(resp.length > 0){
+			$.each(resp, function(idx, facility){
+				trTags.push( fn_makeTr(facility) );
+			});
+		} else{
+			trTags.push($("<tr>").html($("<td colspan='5'>").html("예약한 편의시설이 없습니다.")));
+		}
+		facilityResBody.append(trTags);
+	});
+	return false;
+}).submit();

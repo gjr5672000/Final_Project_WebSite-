@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.member.dao.MemberDAO">
+
+   <resultMap type="MemberVO" id="memberMap" autoMapping="true">
+         <id property="memNo" column="MEM_NO"/>
+         <discriminator javaType="string" column="MEM_ROLE">
+            <case value="ROLE_PRO" resultType="ProfessorVO"></case>
+            <case value="ROLE_STU" resultType="StudentVO"></case>
+            <case value="ROLE_EMP" resultType="EmployeeVO"></case>
+         </discriminator>
+   </resultMap>
+   
+   <select id="selectMember" resultMap="memberMap" parameterType="string">
+       WITH DEPTVIEW AS (
+           SELECT DEPT_NO, C.COL_NO, DEPT_NAME, COL_NAME 
+           FROM DEPARTMENT D INNER JOIN COLLEAGE C
+               ON(C.COL_NO = D.COL_NO)
+       )
+      SELECT MEM_NO
+          , MEM_ROLE
+          , M.*    
+          , P.*
+          , S.*
+          , E.*
+              
+          , PRO_NO
+          , STU_NO
+          , EMP_NO
+           
+           , DEPT_NAME
+           , COL_NAME
+      FROM MEMBER M
+         LEFT OUTER JOIN PROFESSOR P ON(MEM_NO = PRO_NO)
+         LEFT OUTER JOIN STUDENT S ON(MEM_NO = STU_NO)
+         LEFT OUTER JOIN EMPLOYEE E ON(MEM_NO = EMP_NO)
+           
+           LEFT OUTER JOIN DEPTVIEW D
+               ON(D.DEPT_NO = P.DEPT_NO OR D.DEPT_NO = S.DEPT_NO)   
+      WHERE MEM_NO = #{memNo}
+   
+   </select>
+</mapper>

@@ -1,0 +1,75 @@
+package kr.or.ddit.tutition.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.member.vo.MemberVOWrapper;
+import kr.or.ddit.tutition.dao.TutitionDAO;
+import kr.or.ddit.tutition.vo.TuitionVO;
+import kr.or.ddit.tutition.vo.TutiPayVO;
+import kr.or.ddit.vo.Pagination;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class TutitionServiceImpl implements TutitionService {
+
+	@Inject
+	private TutitionDAO tutitionDAO;
+	
+	@Override
+	public void createTutiPay(TutiPayVO tutipay) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<TutiPayVO> retriveTutiPayList(Pagination<TutiPayVO> pagination, String memRole) {
+//		pagination.setTotalRecord(tutitionDAO.selectTotalRecord(pagination));
+		List<TutiPayVO> tutiPayList = null;
+		if(memRole != null) {
+			if(memRole.equals("ROLE_EMP")) {
+				tutiPayList = tutitionDAO.selectTutiPayList(pagination);
+			}else if(memRole.equals("ROLE_STU")) {
+				tutiPayList = tutitionDAO.selectTutiPayMemList(pagination);
+			}
+		}
+		pagination.setDataList(tutiPayList);
+		return tutiPayList;
+		
+	}
+
+
+	@Override
+	public TutiPayVO retrieveTutiPay(String tpNo) {
+		return tutitionDAO.selectTutiPay(tpNo);
+	}
+
+
+	@Override
+	public void removeTutiPay(TutiPayVO condition) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<TuitionVO> retriveTutiList(Pagination<TuitionVO> pagination, String memRole) {
+		pagination.setTotalRecord(tutitionDAO.selectTotalRecord(pagination));
+		List<TuitionVO> tutiList = null;
+		if(memRole != null) {
+			if(memRole.equals("ROLE_EMP")) {
+				tutiList = tutitionDAO.selectTutiList(pagination);
+			}else if(memRole.equals("ROLE_STU")) {
+				tutiList = tutitionDAO.selectTutiMemList(pagination);
+			}
+		}
+		pagination.setDataList(tutiList);
+		return tutiList;
+		}
+}

@@ -1,0 +1,68 @@
+ function changeState(){
+ 	alert('버튼 반응');
+ }
+
+ var changeStateBtn=document.getElementById("changeState");
+ changeStateBtn.addEventListener("click",changeState);
+
+ $("#changeState").click(function(){
+ 	let schRecNo = schrec.schRecNo;
+	fn_detail(schRecNo);
+ });
+
+
+let detailView = $(".detailView");
+let viewUrlIni = detailView.data("viewUrl");
+let cPath = detailView.data("cpath");
+
+$("#changeState").on("click", function(event) {
+    event.preventDefault();
+    let schRecNo = $(this).data('schrec.schRecNo');
+    fn_detail(schRecNo);
+});
+
+let fn_detail = function(schRecNo) {
+    let viewUrl = `${cPath}/sch/schRecView.do`;
+    let viewMethod = "GET";
+
+    $.ajax({
+        url: viewUrl,
+        method: viewMethod,
+        dataType: "json",
+        data: {what:schRecNo,schRecNo: schRecNo}
+    }).done(function(resp, textStatus, jsXHR){
+        console.log("schRecNo :" + resp.schRecNo);
+        let realAsgnSub = resp;
+        detailView.empty();
+        detailView.append(fn_makeTable(realAsgnSub));
+        detailAsgn.show();
+    });
+};
+
+let fn_makeTable = function(realAsgnSub) {
+    let detailtrTags = [];
+    detailtrTags.push(
+        $("<tr>").append(
+            $("<th>").html("확인내용"),
+            $("<th>").html(realAsgnSub.schRecNo)
+        )
+    );
+    stuTags.push(
+        $("<tr>").append(
+            $("<td>")
+                .attr("colspan", "2")
+                .addClass("card-header asText")
+                .attr("style", "background-color:#f2f2f2; text-align:left; border-bottom:2px solid black")
+                .html($("<h4>").attr("style", "font-weight:bold").html("&nbsp&nbsp 내용 확인"))
+        )
+    );
+    stuTags.push(
+        $("<tr>").append(
+            $("<th>").html("현재 단계"),
+            $("<td>").html(realAsgnSub.schRecNo)
+        )
+    );
+    detailtrTags.push(stuTags);
+	console.log()
+    return detailtrTags;
+};

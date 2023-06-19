@@ -1,0 +1,25 @@
+package kr.or.ddit.attendance.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.attendance.dao.AttendanceDAO;
+import kr.or.ddit.attendance.vo.AttendanceVO;
+
+@Service
+public class AttendanceServiceImpl implements AttendanceService {
+	
+	@Inject
+	private AttendanceDAO attendDAO;
+	
+	@Override
+	public List<AttendanceVO> retrieveAttendanceStuList(AttendanceVO attendVO) {
+		
+		return attendDAO.selectAttendanceStuList(attendVO);
+		
+	}
+
+}

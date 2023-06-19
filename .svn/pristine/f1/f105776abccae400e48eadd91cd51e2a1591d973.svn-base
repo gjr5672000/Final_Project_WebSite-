@@ -1,0 +1,18 @@
+/* 과제 상세보기 데이터 가져오기 */
+let fn_detail = function(schRecNo){
+
+	/* ajax요청으로 과제 상세보기 */
+	let viewUrl = `${cPath}/sch/schRecView.do?what=${schRecNo}`;
+	let viewMethod = "get"
+	$.ajax({
+		url : viewUrl,
+		method : viewMethod,
+		dataType : "json"
+	}).done(function(resp, textStatus, jqXHR){
+		console.log("schRecNo:"+resp.schRecNo);
+		let realAsgnSub = resp;
+		detailView.empty();
+		detailView.append( fn_makeTable(realAsgnSub) );
+		detailAsgn.show();
+	});
+};

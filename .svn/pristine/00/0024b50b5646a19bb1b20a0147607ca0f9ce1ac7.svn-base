@@ -1,0 +1,16 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!-- JAVASCRIPTS -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+<!-- Popper JS [ OPTIONAL ] -->
+<script src="${pageContext.request.contextPath}/resources/assets/vendors/popperjs/popper.min.js" defer></script>
+
+<!-- Bootstrap JS [ OPTIONAL ] -->
+<script src="${pageContext.request.contextPath}/resources/assets/vendors/bootstrap/bootstrap.min.js" defer></script>
+
+<!-- Nifty JS [ OPTIONAL ] -->
+<script src="${pageContext.request.contextPath}/resources/assets/js/nifty.js" defer></script>
+
+<!-- Zangdar Script [ OPTIONAL ] -->
+<script src="${pageContext.request.contextPath}/resources/assets/vendors/zangdar/zangdar.min.js" defer></script>

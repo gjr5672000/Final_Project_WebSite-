@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.attendance.dao.AttendanceDAO">
+	
+	<resultMap type="AttendanceVO" id="attendStu" autoMapping="true">
+		<id property="attendNo" column="ATTEND_NO"/>
+		<collection property="studentList" ofType="StudentVO" autoMapping="true" />
+	</resultMap>
+	
+	<resultMap type="CourseVO" id="stuList" autoMapping="true">
+		<id property="stuNo" column="STU_NO"/>
+		<id property="courseNo" column="COURSE_NO"/>
+		<collection property="attendList" ofType="AttendanceVO" autoMapping="true" />
+	</resultMap>
+	
+	
+	
+	<select id="selectCourseStu" resultMap="attendStu" parameterType="string">
+		SELECT MEM_NO, MEM_NAME, DEPT_NAME, MEM_EMAIL
+		FROM MEMBER_COURSE
+		WHERE LECT_NO = #{lectNo}
+	</select>
+	
+	<select id="countStuAttend" resultType="int" parameterType="string">
+		SELECT COUNT(*) AS COUNT_ATTEND 
+		FROM ATTENDANCE 
+		WHERE STU_NO = #{stuNo} 
+		AND ATTEND_STATE &lt;&gt; 'D002'
+	</select>
+	
+	<select id="countStuDeattend" resultType="int" parameterType="string">
+		SELECT COUNT(*) AS COUNT_DEATTEND
+		FROM ATTENDANCE
+		WHERE STU_NO = #{stuNo}
+		AND ATTEND_STATE = 'D002'
+	</select>
+	
+	<select id="countCurrentAttend" resultType="int" parameterType="string">
+		WITH COURSEONE AS (
+		    SELECT COURSE_NO 
+		    FROM COURSE 
+		    WHERE LECT_NO = #{lectNo}
+		)
+		SELECT COUNT(*) 
+		FROM (
+			SELECT DISTINCT TO_CHAR(ATTEND_DATE)
+			FROM ATTENDANCE
+			WHERE COURSE_NO IN (SELECT COURSE_NO FROM COURSEONE)
+		)
+	</select>
+	
+	<select id="selectStuList" resultMap="stuList" parameterType="string">
+		
+		SELECT 
+			A.STU_NO, M.COURSE_NO , 
+			MEM_NAME "student.memName", 
+			M.DEPT_NAME "student.deptName", 
+			M.MEM_EMAIL "student.memEmail", 
+			A.ATTEND_NO, A.ATTEND_DATE, A.ATTEND_STATE
+		FROM MEMBER_COURSE M
+		    LEFT OUTER JOIN ATTENDANCE A ON ( M.MEM_NO = A.STU_NO)
+		WHERE LECT_NO = #{lectNo}
+		ORDER BY A.ATTEND_DATE
+	</select>
+	
+	<update id="updateAttend" parameterType="AttendanceVO">
+		UPDATE ATTENDANCE
+		SET ATTEND_STATE = #{attendState}
+		WHERE ATTEND_NO = #{attendNo}
+	</update>
+	
+	
+	
+	<select id="selectMyattend" resultType="AttendanceVO" parameterType="AttendanceVO">
+		WITH COURSEONE AS (
+		    SELECT COURSE_NO 
+		    FROM COURSE 
+		    WHERE LECT_NO = #{lectNo}
+		    )
+		SELECT
+		    ATTEND_NO,
+		    COURSE_NO,
+		    STU_NO,
+		    ATTEND_DATE,
+		    ATTEND_STATE
+		FROM ATTENDANCE
+		WHERE STU_NO = #{stuNo}
+	</select>
+	
+	<select id="selectMylectname" resultType="string" parameterType="string">
+		SELECT LECT_NAME
+		FROM LECTURE
+		WHERE LECT_NO = #{lectNo}
+	</select>
+</mapper>

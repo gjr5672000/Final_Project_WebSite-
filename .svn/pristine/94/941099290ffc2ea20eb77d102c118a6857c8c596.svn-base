@@ -1,0 +1,72 @@
+//jsp cPath----------------------------------------------
+const cPath = document.querySelector('#cPath').value;
+//-------------------------------------------------------
+//화면 로딩 완료후 시작 이벤트리스너------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  initGS();
+});
+//-------------------------------------------------------
+//GridStack생성---------------------------------------------
+const initGS = () => {
+  // GridStack.js를 초기화하고 관련 설정을 지정합니다.
+  let grid = GridStack.init({
+    cellHeight: 70, //그리드 내 셀 높이 설정
+    acceptWidgets: true, // 위젯 드롭 할 수 있는지 여부.
+    removable: '#trash', // drag-out delete class 지정 (삭제할 수 있는 위젯) 
+  });
+  // 새로운 위젯 생성 메서드 '셀렉터'. 어팬드될 위치 '바디', 헬퍼는 도움말 요소 '복사본표시'
+  GridStack.setupDragIn('.newWidget', { appendTo: 'body', helper: 'clone' });
+  // 생성될 그리드 전체 지정 
+  //List<vo> 받기 배열+객체
+  // noMove: true 움직이지 못하게함.
+  //  noResize: true 사이즈 조절 못하게 함.
+  //  locked: true 삭제 금지.
+  // minW 가로 넓이 최솟값 제한. maxW 가로 넓이 최댓값 제한
+  // x : 그리드 아이템 시작 열(컬럼) 위치. 0부터 시작
+  // y : 그리드 아이템 시작 행(로우) 위치. 0부터 시작
+  // w : 그리드 아이템 차지 가로 너비 == 컬럼차지개수
+  // h : 그리드 아이템 차지 세로 높이 == 로우차지개수
+  // content : 그리드 아이템 내용 지정. 텍스트나 HTML코드 넣을 수 있음. '여기안에'
+  //위젯 개별생성
+  //grid.addWidget($('<div><div class="grid-stack-item-content">New Widget</div></div>'), x, y, width, height, autoPosition, minWidth, maxWidth, minHeight, maxHeight, id);
+  // 위젯 내용 업데이트
+  //grid.addWidget($('<div><div class="grid-stack-item-content">Updated Widget</div></div>'), x, y, width, height, autoPosition, minWidth, maxWidth, minHeight, maxHeight, id);
+  // 예시
+  //grid.addWidget($('<div><div class="grid-stack-item-content">New Widget</div></div>'), undefined, undefined, 2, 2);
+  // 아이템으로 담아서 쓰는 예시
+  // let items = [
+  //     {x: 0, y: 0, w: 4, h: 2, content: '1'},
+  //     {x: 4, y: 0, w: 4, h: 4, noMove: true, noResize: true, locked: true, content: 'I can\'t be moved or dragged!<br><ion-icon name="ios-lock" style="font-size:300%"></ion-icon>'},
+  //     {x: 8, y: 0, w: 2, h: 2, minW: 2, noResize: true, content: '<p class="card-text text-center" style="margin-bottom: 0">Drag me!<p class="card-text text-center"style="margin-bottom: 0"><ion-icon name="hand" style="font-size: 300%"></ion-icon><p class="card-text text-center" style="margin-bottom: 0">...but don\'t resize me!'},
+  //     {x: 10, y: 0, w: 2, h: 2, content: '4'},
+  //     {x: 0, y: 2, w: 2, h: 2, content: '5'},
+  //     {x: 2, y: 2, w: 2, h: 4, content: '6'},
+  //     {x: 8, y: 2, w: 4, h: 2, content: '7'},
+  //     {x: 0, y: 4, w: 2, h: 2, content: '8'},
+  //     {x: 4, y: 4, w: 4, h: 2, content: '9'},
+  //     {x: 8, y: 4, w: 2, h: 2, content: '10'},
+  //     {x: 10, y: 4, w: 2, h: 2, content: '11'},
+  // ];
+
+  let items = [];
+  //그리드 읽기
+  grid.load(items);
+  /*
+  해당 코드는 Gridstack.js 라이브러리에서 제공하는 이벤트 핸들러를 사용하여 그리드의 위젯이 추가, 제거 또는 변경될 때마다 실행되는 코드입니다.
+
+  1. grid.on() 메서드는 GridStack 클래스의 인스턴스에서 발생하는 이벤트를 수신하고 처리합니다.
+  2. added, removed, change는 GridStack 이벤트 유형을 나타내며, 위젯이 추가, 제거 또는 변경될 때 각각 발생합니다.
+  3. function(e, items) 콜백 함수는 이벤트 객체 e와 변경된 위젯 목록인 items를 매개 변수로 사용합니다.
+  4. items.forEach() 메서드는 변경된 각 위젯에 대해 콜백 함수를 실행합니다.
+  5. str += ' (x,y)=' + item.x + ',' + item.y;는 변경된 위젯의 위치 (x, y)를 문자열에 추가합니다.
+  6. console.log() 함수는 이벤트 유형과 변경된 위젯의 수, 위치를 포함하는 문자열을 콘솔에 출력합니다.
+
+  따라서 아래 코드는 그리드에서 위젯이 추가, 제거 또는 변경될 때마다 콘솔에 변경된 위젯의 정보를 출력합니다. 
+  */
+  grid.on('added removed change', function(e, items) {
+    let str = '';
+    items.forEach(function(item) { str += ' (x,y)=' + item.x + ',' + item.y; });
+    console.log(e.type + ' ' + items.length + ' items:' + str );
+  });
+};
+ 

@@ -1,0 +1,64 @@
+package kr.or.ddit.exam.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.exam.dao.ExamDAO;
+import kr.or.ddit.exam.dao.ExamQuestionDAO;
+import kr.or.ddit.exam.dao.ExamTextDAO;
+import kr.or.ddit.exam.vo.ExamQuestionVO;
+import kr.or.ddit.exam.vo.ExamTextVO;
+import kr.or.ddit.exam.vo.ExamVO;
+
+@Service
+public class ExamServiceImpl implements ExamService{
+	
+	@Inject
+	private ExamDAO examDAO;
+	
+	@Inject
+	private ExamQuestionDAO examQuestionDAO;
+	
+	@Inject
+	private ExamTextDAO examTextDAO;
+
+	// 시험 목록
+	@Override
+	public List<ExamVO> retrieveExamList(String lectNo) {
+		List<ExamVO> examList = examDAO.selectExamList(lectNo);
+		return examList;
+	}
+
+	// 시험 상세 조회
+	@Override
+	public ExamVO retrieveExam(String examNo) {
+		ExamVO exam = examDAO.selectExam(examNo);
+		if(exam == null) throw new RuntimeException();
+		return exam;
+	}
+	
+	// 시험 등록
+	@Override
+	public ServiceResult createExam(ExamVO exam) {
+		int result =examDAO.insertExam(exam);
+		return result >0? ServiceResult.OK : ServiceResult.FAIL;
+		
+	}
+
+	@Override
+	public void createExamQuestion(ExamQuestionVO examQue) { 
+		examQuestionDAO.insertExamQuestion(examQue);
+		examQue.getEqNo();
+		examQue.getExamTextList();
+		
+		examTextDAO.insertExamText(examQue);
+		
+	}
+
+
+
+}

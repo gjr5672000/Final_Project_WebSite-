@@ -1,0 +1,13 @@
+package kr.or.ddit.member.service;
+
+import java.util.List;
+
+import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.member.vo.MemberVO;
+
+public interface MemberService {
+   
+   public List<MemberVO> searchId(MemberVO member);
+   
+	public ServiceResult searchPasswd(MemberVO member);
+}

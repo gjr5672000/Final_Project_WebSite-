@@ -1,0 +1,17 @@
+package kr.or.ddit.Calendar.vo;
+
+import java.time.LocalDateTime;
+
+import lombok.Data;
+
+@Data
+public class CalendarVO {
+	private Integer calNo;
+	private String calTitle;
+	private LocalDateTime calSdate;
+	private LocalDateTime calEdate;
+	private boolean allDay;
+	private String calUser;
+	private String textColor;
+	private String backgroundColor;
+}

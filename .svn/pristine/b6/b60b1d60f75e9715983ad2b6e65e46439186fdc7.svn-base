@@ -1,0 +1,36 @@
+package kr.or.ddit.score.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.lecture.dao.LectureDAO;
+import kr.or.ddit.score.service.ScoreService;
+
+@Controller
+@RequestMapping("/score")
+public class ProScoreController {
+	
+	@Inject
+	private ScoreService service;
+	
+	@Inject
+	private LectureDAO lectDAO;
+	
+	
+	@GetMapping("/proScore.do")
+	public String getUI(
+		Model model,
+		@RequestParam("what") String lectNo,
+		Authentication authentication
+	) {
+		model.addAttribute("lectNo",lectNo);
+		model.addAttribute("lectureList", lectDAO.selectProLectureList(authentication.getName()));
+		return "score/scoreList";
+	}
+}

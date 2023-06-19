@@ -1,0 +1,57 @@
+package kr.or.ddit.curri.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.curri.service.MyCurriService;
+import kr.or.ddit.curri.vo.CurriVO;
+import kr.or.ddit.subject.vo.SubjectVO;
+import kr.or.ddit.vo.SimpleCondition;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/curri/myCurri.do")
+public class MyCurriController {
+	@Inject
+	private MyCurriService service;
+
+	@GetMapping
+	public String getUI(){
+		return "curri/myCurri";
+	}
+
+	@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public List<SubjectVO> subjectList(SimpleCondition simpleCondition){
+		List<SubjectVO> subject = new ArrayList<SubjectVO>();
+		subject = service.retrieveSubjectList();
+		return subject;
+	}
+
+	@GetMapping(value="/curriList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public List<CurriVO> CurriList(String curriString){
+		List<CurriVO> curri = new ArrayList<CurriVO>();
+		curri = service.retrieveCurriList(curriString);
+		return curri;
+	}
+
+	@PostMapping(value ="/curriInsert",produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public void curriInsert(@RequestBody CurriVO curri) {
+		log.info("curri의 Controller에서의 값은?{}",curri);
+		service.createCurri(curri);
+	}
+
+}

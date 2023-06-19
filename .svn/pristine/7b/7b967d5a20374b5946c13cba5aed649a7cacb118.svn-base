@@ -1,0 +1,14 @@
+package kr.or.ddit.member.service;
+
+import java.util.List;
+
+import kr.or.ddit.member.vo.MemberVO;
+import kr.or.ddit.vo.MailVO;
+
+public interface MemberService {
+   
+   public List<MemberVO> searchId(MemberVO member);
+   
+   public MailVO searchPasswd(MemberVO member);
+//   public MailVO getNewpasswd(MemberVO member);
+}

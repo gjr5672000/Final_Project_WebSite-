@@ -1,0 +1,26 @@
+package kr.or.ddit.lecture.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.lecture.dao.LectureDataDAO;
+import kr.or.ddit.lecture.vo.LectureDataVO;
+import kr.or.ddit.vo.Pagination;
+
+@Service
+public class LectureDataServiceImpl implements LectureDataService {
+	@Inject
+	private LectureDataDAO lectureDataDAO;
+
+	@Override
+	public List<LectureDataVO> retrieveLectureDataList(Pagination<LectureDataVO> pagination) {
+		pagination.setTotalRecord(lectureDataDAO.selectTotalLectureRecord(pagination));
+		List<LectureDataVO> lectureDataList = lectureDataDAO.selectLectureDataList(pagination);
+		pagination.setDataList(lectureDataList);
+		return lectureDataList;
+	}
+
+}

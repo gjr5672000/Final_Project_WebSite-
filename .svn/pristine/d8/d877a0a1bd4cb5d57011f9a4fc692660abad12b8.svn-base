@@ -1,0 +1,158 @@
+<%@page import="java.util.Arrays"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>    
+<div class="space m-3 p-5">
+	<button class="openBtn" data-role="connect">ROOM ID(${lectNo}) 강의실 출석 오픈!</button><br><br>
+	<button class="openBtn" data-role="disconnect" disabled="disabled">ROOM ID(${lectNo}) 강의실 출석 종료!</button><br><br>
+	<table class="table table-hover text-center underbar">
+		<thead>
+			<tr>
+				<th> <h4>출석 학생 리스트</h4> </th>
+			</tr>
+		</thead>
+		<tbody id="stdUL">
+			<c:forEach items='${cosStuList }' var="usr">
+				<tr>
+					<td id="stu_${usr.stuNo}" data-stu-no="${usr.stuNo}">
+						${usr.student.memName } : <span class="bg-danger outAttend">결석</span>
+					</td>
+				</tr>
+			</c:forEach>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td>
+					<button class="openBtn saveBtn btn btn-primary" disabled="disabled">저장</button>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	<security:authentication property="principal.realUser" var="authUser" />
+</div>
+<script>
+	const ROOMID = `${lectNo}`;
+	const openBtns = document.querySelectorAll(".openBtn");
+	let client = null;
+
+	function openBtnOn(targetBtn){
+		
+		// 스톰프 객체 생성
+		client = new StompJs.Client({
+			brokerURL:"ws://localhost${cPath}/ws/classroom",
+			debug:function(str){
+				console.log(str);
+			},
+			// 연결되고서 수행하는 내용
+			onConnect:function(frame){
+				const subscription1 = this.subscribe(`/user/classroom/\${ROOMID}`, function(msgFrame){
+					let payload = JSON.parse(msgFrame.body);
+					let stdLi = stdUL.querySelector(`#stu_\${payload.sender}`);
+					if(stdLi){
+						let span = stdLi.querySelector("span");
+						span.innerHTML = "출석";
+						span.classList.remove("bg-danger", "outAttend");
+						span.classList.add("bg-success", "inAttend");
+					}
+				});
+
+				
+				this.publish({
+					destination:"/classroom/open",
+					body:JSON.stringify({
+						classRoomId:ROOMID,
+						professor:"${authUser.proNo}"
+					}),
+					headers:{"content-type":"application/json"}
+				})
+			}
+		});
+		client.activate();
+	}
+	
+	
+	// 위 버튼을 누르면,
+	openBtns[0].addEventListener("click",()=>{
+		// 버튼 토글하고, 
+		openBtns[0].disabled = true;
+		openBtns[1].disabled  = false;
+		openBtns[2].disabled  = true;
+		
+		// 연결
+		openBtnOn(openBtns[0]);
+	})
+
+	// 아래 버튼을 누르면, 
+	openBtns[1].addEventListener("click",()=>{
+		// 버튼 토글하고, 
+		openBtns[1].disabled = true;
+		openBtns[0].disabled  = false;
+		openBtns[2].disabled  = false;
+		
+		// 연결 종료!
+		client.deactivate();
+	})
+
+	
+	let saveBtn = document.querySelector(".saveBtn")
+	saveBtn.addEventListener("click", ()=>{
+		let outSpans = document.querySelectorAll("span.outAttend");
+		let inSpans = document.querySelectorAll("span.inAttend");
+		
+		let outStus = [];
+		outSpans.forEach(function(outSpan){
+			outStus.push(outSpan.parentNode.dataset.stuNo);
+		})
+		
+		let inStus = [];
+		inSpans.forEach(function(inSpan){
+			inStus.push(inSpan.parentNode.dataset.stuNo);
+		})
+		
+		console.log(outSpans, ":결석");
+		console.log(outStus, ":결석학생");
+		console.log(inSpans, ":출석");
+		console.log(inStus, ":출석학생");
+		
+		//controller로 전송할
+		//경로 설정
+		let attendUrl = `\${$.CPATH}/attendance/attendInsert.do`
+		//데이터 설정
+		let lectNo = ${lectNo};
+		//결석일경우, 
+		attendDatas = [];
+		outStus.forEach(function(outStu){
+			attendData = {
+				stuNo : outStu,
+				attendState : "D002",
+				lectNo : lectNo
+			}
+			attendDatas.push(attendData);
+		})
+		         //(서비스에서->기존데이터 없으면 그대로 등록)
+		//출석일경우, (서비스에서->기존데이터 결석이면 D003, 출석이면 D001)
+		attendInDatas = [];
+		inStus.forEach(function(inStu){
+			attendData = {
+				stuNo : inStu,
+				attendState : "D001",
+				lectNo : lectNo
+			}
+			attendDatas.push(attendData);
+		})
+		
+		//ajax로 전송하자.
+		$.ajax({
+			url : attendUrl,
+			method : "post", 
+			data : JSON.stringify(attendDatas),
+			dataType : "json",
+			contentType : "application/json"
+		}).done(function(resp, textStatus, jqXHR) {
+			console.log("ajax 성공, 결과(2-성공) : ",  resp);
+		})
+		
+	});
+	
+</script>

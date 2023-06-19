@@ -1,0 +1,13 @@
+package kr.or.ddit.score.dao;
+
+import org.apache.ibatis.annotations.Mapper;
+/**
+ * 	점수 DAO
+ *  - 23.05.24 생성
+ * @author ShinYuCheol
+ *
+ */
+@Mapper
+public interface ScoreDAO {
+
+}

@@ -1,0 +1,171 @@
+  // 연구번호 study.studyNo
+      // 교수아이디 study.proNo
+      // 연구명 study.studyName
+      // 시작일 study.studySdate
+      // 마감일 study.studyEdate
+      // 주제 study.studySubject
+      // 목표 study.studyPurpose
+      // 연구자료 study.studyFile
+//--------jsp 에서 가져온 cPath---------------------------------------------
+const cPath = document.querySelector('#cPath').value;
+//--------div 바꾸기--------------------------------------------------------
+let changeStudyDiv = document.querySelector('#changeStudyDiv');
+//--------분류---------------------------------------------
+const columnDefs = [
+  { field: "rnum", headerName: "번호" },
+  // { field: "studyNo", headerName: "연구번호" },
+  { field: "memName", headerName: "교수명" },
+  { field: "studyName", headerName: "연구명" },
+  { field: "studySubject", headerName: "주제" },
+];
+
+//--------빈 데이터 배열 생성---------------------------------------------
+
+const rowData = [];
+
+//--------옵션설정---------------------------------------------
+const gridOptions = {
+  defaultColDef: {
+    sortable: true,
+    filter: true,
+    resizable: true,
+    editable: false,
+  },
+  columnDefs: columnDefs,
+  rowData: rowData,
+  pagination: true,
+  //paginationAutoPageSize:true,
+  paginationPageSize: 8,
+
+  onCellClicked: function(event) {
+    const clickedData = event.data; // 클릭된 행(row)의 데이터
+    // const clickedColDef = event.colDef; // 클릭된 열(column)의 정의
+    // const clickedColKey = event.column.colId; // 클릭된 열(column)의 key
+    // const clickedValue = event.value; // 클릭된 셀(cell)의 값(value)
+    // console.log(clickedData.studyNo);
+    // console.log(`Clicked data: ${JSON.stringify(clickedData)}`);
+    // console.log(`Clicked colDef: ${JSON.stringify(clickedColDef)}`);
+    // console.log(`Clicked colKey: ${clickedColKey}`);
+    // console.log(`Clicked value: ${clickedValue}`);
+    
+    let xhr = new XMLHttpRequest();
+    xhr.open("get", `${cPath}/professor/professorStudyView.do?what=${clickedData.studyNo}`, true);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        
+        let study = JSON.parse(xhr.responseText);
+        console.log(study);
+
+        changeStudyDiv.innerHTML="";
+
+        let myTable = document.createElement("table");
+        myTable.setAttribute("class", "table table-bordered");
+
+        function createTableRow(thValue, tdValue){
+          let myTr = document.createElement("tr");
+          let myTh = document.createElement("th");
+          myTh.textContent = thValue;
+          myTr.appendChild(myTh);
+
+          let myTd = document.createElement("td");
+          myTd.textContent = tdValue;
+          myTr.appendChild(myTd);
+
+          return myTr;
+        }
+      // 연구번호 study.studyNo
+      // 교수명 study.memName
+      // 교수아이디 study.proNo
+      // 연구명 study.studyName
+      // 시작일 study.studySdate
+      // 마감일 study.studyEdate
+      // 주제 study.studySubject
+      // 목표 study.studyPurpose
+      // 연구자료 study.studyFile
+
+        myTable.appendChild(createTableRow("연구번호",study.studyNo));
+        myTable.appendChild(createTableRow("교수명",study.memName));
+        myTable.appendChild(createTableRow("연구명",study.studyName));
+        myTable.appendChild(createTableRow("시작일",study.studySdate));
+        myTable.appendChild(createTableRow("마감일",study.studyEdate));
+        myTable.appendChild(createTableRow("주제",study.studySubject));
+        myTable.appendChild(createTableRow("목표",study.studyPurpose));
+
+        let fileTr = document.createElement("tr");
+        let fileTh = document.createElement("th");
+        fileTh.textContent = "첨부파일";
+        fileTr.appendChild(fileTh);
+        let fileTd = document.createElement("td");
+
+        if(study.atchFileGroup!=null){
+        let atchFileList = study.atchFileGroup.atchFileList;
+          if(atchFileList!=null && atchFileList.length >0){
+            for(let i = 0; i < atchFileList.length; i++){
+              let atchFile = atchFileList[i];
+              let downloadURL = "/professor/attatch/download.do?atchId="+atchFile.atchId + "&atchSeq=" + atchFile.atchSeq;
+              let atchLink = document.createElement("a");
+              atchLink.href = downloadURL;
+              atchLink.textContent = atchFile.atchOrginName;
+              fileTd.appendChild(atchLink);
+
+              if(i < atchFileList.length -1){
+                let separator =document.createTextNode(" | ");
+                fileTd.appendChild(separator);
+              }
+
+            }
+          }
+        }
+        fileTr.appendChild(fileTd);
+
+
+        changeStudyDiv.appendChild(myTable);
+      }
+    }
+    xhr.send();
+    
+    
+    
+  }
+};
+
+//--------비동기로 데이터 가져와서 빈 데이터 배열에 넣기-----------------------
+
+const initAG = () =>{
+  let xhr = new XMLHttpRequest();
+  xhr.open("get", `${cPath}/professor/professorStudyList.do` , true);
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      console.log(xhr.responseText);
+      const data = JSON.parse(xhr.responseText);
+      
+      data.forEach(study => {
+        let professorStudy = {};
+        professorStudy.rnum = study.rnum;
+        professorStudy.memName = study.memName;
+        professorStudy.studyName = study.studyName;
+        professorStudy.studySubject = study.studySubject;
+        professorStudy.studyNo = study.studyNo;
+
+        rowData.push(professorStudy);
+  
+      });
+      gridOptions.api.setRowData(rowData);
+    }
+  };
+  xhr.send();  
+}
+
+//--------실행--------------------------------------
+
+document.addEventListener("DOMContentLoaded", () => {
+  const gridDiv = document.querySelector("#myGrid");
+  new agGrid.Grid(gridDiv, gridOptions);
+  initAG();
+});
+
+
+
+
+
+

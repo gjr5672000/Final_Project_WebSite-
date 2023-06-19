@@ -1,0 +1,13 @@
+package kr.or.ddit.curri.service;
+
+import java.util.List;
+
+import kr.or.ddit.curri.vo.CurriVO;
+import kr.or.ddit.subject.vo.SubjectVO;
+
+public interface MyCurriService {
+
+	public List<SubjectVO> retrieveSubjectList();
+	public void createCurri(CurriVO curri);
+	public List<CurriVO> retrieveCurriList(String Designer);
+}

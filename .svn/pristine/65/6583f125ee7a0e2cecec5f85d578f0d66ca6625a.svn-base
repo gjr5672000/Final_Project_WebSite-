@@ -1,0 +1,26 @@
+package kr.or.ddit.attendance.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.attendance.vo.AttendanceVO;
+
+/**
+ * 출석 DAO
+ * - 23.05.11 생성
+ * @author Lee Da Young
+ *
+ */
+@Mapper
+public interface AttendanceDAO {
+	
+	
+	/**
+	 * 해당 날짜에 lectNo강의를 수강하는 학생들의 정보와 학생들의 출석정보
+	 * @param lectNo
+	 * @return
+	 */
+	public List<AttendanceVO> selectAttendanceStuList(AttendanceVO attendVO);
+}

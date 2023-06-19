@@ -1,0 +1,69 @@
+let listBody = $("#listBody");
+let fn_makeTr = function(board) {
+	let btn = $("<button>")
+		.addClass("btn btn-icon btn-info btn-xs")
+		.html('<ion-icon name="add-outline"></ion-icon>')
+		.click(function() {
+			let parentTr = $(this).parent().parent();
+			let subName = parentTr.children().eq(3).text();
+
+			// myTest 테이블의 각 td에 클릭 이벤트를 추가합니다.
+			// 클릭된 td에 subName이 추가되고, 원래의 tr이 사라집니다.
+			// 이후 클릭 이벤트는 제거됩니다.
+			$("#myTest td").off().on("click", function() {
+				$(this).text(subName);
+				parentTr.hide();
+				$("#myTest td").off("click");  // 클릭 이벤트를 제거합니다.
+			});
+		});
+
+	return $("<tr>").append(
+		$("<td>").html(board.subNo)
+		, $("<td>").html(board.deptName)
+		, $("<td>").html(board.colName)
+		, $("<td>").html(board.subName)
+		, $("<td>").html(board.subGrade)
+		, $("<td>").html(board.subScr)
+		, $("<td>").html(board.colName)
+		, $("<td>").html(btn)
+	);
+}
+// 전역 변수를 선언하여 이전에 클릭된 td를 추적합니다.
+
+
+let searchForm = $("[name=searchForm]").on("submit", function(event) {
+	event.preventDefault();
+	let url = this.action;
+	let method = this.method;
+	let data = $(this).serialize();
+	$.ajax({
+		url: url,
+		method: method,
+		data: data,
+		dataType: "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		console.log(resp);
+		listBody.empty();
+
+		let trTags = [];
+		if (resp.length > 0) {
+			$.each(resp, function(idx, board) {
+				trTags.push(fn_makeTr(board));
+			});
+		} else {
+			trTags.push($("<tr>").html($("<td colspan='3'>").html("교과목 없음.")));
+		}
+		listBody.append(trTags);
+	});
+	return false;
+}).submit();
+
+let searchUI = $("#searchUI").on("click", "#searchBtn", function() {
+	$(this).parents("#searchUI").find(":input[name]").each(function(idx, input) {
+		let iptName = input.name;
+		let iptValue = $(input).val();
+		searchForm.find(`[name=${iptName}]`).val(iptValue);
+	});
+	searchForm.submit();
+
+});

@@ -1,0 +1,46 @@
+package kr.or.ddit.asgn.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.asgn.service.AsgnService;
+import kr.or.ddit.asgn.vo.AsgnVO;
+import kr.or.ddit.facility.vo.FacilityVO;
+import kr.or.ddit.validate.UpdateGroup;
+
+@Controller
+@RequestMapping("/asgn")
+public class UpdateScoreController {
+
+	@Inject
+	private AsgnService service;
+
+	@ModelAttribute("asgn")
+	public AsgnVO asgn() {
+		return new AsgnVO();
+	}
+	
+	@PostMapping(value = "/updateScore.do")
+	@ResponseBody
+	public String updateScore( 
+			@Validated(UpdateGroup.class) @ModelAttribute("asgn") AsgnVO asgn
+			, Errors errors
+	) {
+		String viewName = null;
+		if(!errors.hasErrors()) {
+			service.modifyScore(asgn);
+			viewName = "redirect:/asgn/proStuAsgnView.do";
+		}else {
+			viewName = "redirect:/asgn/proStuAsgnView.do";
+		}
+		return viewName;
+		
+	}
+}

@@ -1,0 +1,25 @@
+package kr.or.ddit.curri.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.curri.dao.MyCurriDAO;
+import kr.or.ddit.subject.vo.SubjectVO;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class MyCurriServiceImpl implements MyCurriService {
+	@Inject
+	private MyCurriDAO mycurriDAO;
+
+	@Override
+	public List<SubjectVO> retrieveSubjectList() {
+		List<SubjectVO> subjectTotalList = mycurriDAO.subjectList();
+		return subjectTotalList;
+	}
+
+}

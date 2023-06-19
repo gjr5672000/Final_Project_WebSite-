@@ -1,0 +1,106 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<!-- 학생 상세보기 모달 -->
+<div id="stuModal" style="display: none;">
+	<div id="modalDiv" class="card border-2 border-primary">
+	    <div id="modalHead" class="card-header toolbar">
+	    	<div class="toolbar-start">
+		        <h4>모달 제목</h4>
+	    	</div>
+	    	<div class="toolbar-end">
+		        <button onclick="modalClose()" class="btn"><ion-icon name="close-outline"></ion-icon></button>
+	    	</div>
+	    </div>
+	    <div id="modalBody" class="">
+			<div id="modalCont1" class="card-body overflow-scroll scrollable-content">
+			    <form id="infoUpdateForm">
+			    	<div>
+			    		<div>
+			    			<img class="profileImg" src="${cPath}/resources/assets/img/profile-photos/1.png" alt="Profile Picture" loading="lazy">
+			    		</div>
+			    		<input type="file" name="">
+			    		<input id="infoUpdateBtn" type="submit" value="저장">
+			    	</div>
+			    	<div>
+				    	<table id="profileTb" class="table table-bordered">
+							<tr>
+								<th>이름</th>
+								<td><input type="text" name=""></td>
+								<th>성별</th>
+								<td><input type="text" name=""></td>
+							</tr>
+							<tr>
+								<th>1</th>
+								<td></td>
+								<th>2</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th>3</th>
+								<td></td>
+								<th>4</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th>5</th>
+								<td></td>
+								<th>6</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th>7</th>
+								<td></td>
+								<th>8</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th>주소</th>
+								<td colspan="3"></td>
+							</tr>
+				    	</table>
+			    	</div>
+		    	</form>
+			</div>
+		    <div id="modalCont2" class="card-body overflow-scroll scrollable-content">
+		    	<table class="table table-bordered">
+					<tr>
+						<th>이름</th>
+						<td><input type="text" name=""></td>
+						<th>성별</th>
+						<td><input type="text" name=""></td>
+					</tr>
+					<tr>
+						<th>1</th>
+						<td></td>
+						<th>2</th>
+						<td></td>
+					</tr>
+					<tr>
+						<th>3</th>
+						<td></td>
+						<th>4</th>
+						<td></td>
+					</tr>
+					<tr>
+						<th>5</th>
+						<td></td>
+						<th>6</th>
+						<td></td>
+					</tr>
+					<tr>
+						<th>7</th>
+						<td></td>
+						<th>8</th>
+						<td></td>
+					</tr>
+					<tr>
+						<th>주소</th>
+						<td colspan="3"></td>
+					</tr>
+		    	</table>
+		    </div>
+	    </div>
+	</div>
+</div>
+<!-- 학생 상세보기 모달 끝 -->

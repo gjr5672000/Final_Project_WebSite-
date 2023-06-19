@@ -1,0 +1,14 @@
+package kr.or.ddit.student.service;
+
+import java.util.List;
+
+import kr.or.ddit.student.vo.StudentVO;
+import kr.or.ddit.vo.Pagination;
+
+public interface StudentService {
+//	createStudent
+	public List<StudentVO> retrieveStudentList(Pagination<StudentVO> pagination);
+//	retrieveStudent
+//	modifyStudent
+//	removeStudent
+}

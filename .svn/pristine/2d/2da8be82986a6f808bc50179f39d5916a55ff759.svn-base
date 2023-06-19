@@ -1,0 +1,171 @@
+/**
+ * 
+ */
+   // 상세검색 클릭 했는지 안했는지 여부
+   var detailchk = false;
+   let detailTr = $("#detailTr");
+   detailTr.find("[name]").on("change", function(event) {
+	   	console.log("this: ", this);
+	   	console.log("$(this): ", $(this));
+		console.log("detailTr: ", detailTr);
+	   
+		let iptName = this.name;
+		let iptValue = $(this).val();
+	    console.log(iptName, iptValue);
+	         
+	    searchForm.find(`[name=${iptName}]`).val(iptValue);
+	    
+	    searchForm.submit();
+	});
+   
+   
+   let detailBtn = $("#detailBtn").on("click", function(){
+      detailchk = !detailchk;
+      console.log(detailchk);
+
+      //만약 상세검색detailchk이 true면 detailTr display 보이게 하기
+      // false 면 display none하기 & 상세 조건 초기화 
+      if(detailchk){
+//          detailTr.attr('style', "display:'';");
+         detailTr.show();
+         
+      }else{
+          detailTr.hide();
+          
+          // 검색 조건 초기화
+          $("[name=deptNo]").val("");
+          $("[name=stuYear]").val("");
+          $("[name=memGender]").val("");
+          $("[name=stuState]").val("");
+          $("[name=page]").val("");
+
+          searchForm.submit();
+       }
+
+
+   });
+   
+
+   let listBody = $("#listBody");
+   let pagingArea = $("#pagingArea"); 
+
+   let totalRecord = $("#totalRecord");
+
+   // searchForm에 input 값을 가지고 비동기로 리스트 가져오기 (테이블 바디만 새로고침)
+   let searchForm = $("[name=searchForm]").on("submit", function(event){
+		event.preventDefault();
+      
+      // 테이블 바디와 페이징 부분 비우기
+		listBody.empty();
+		pagingArea.empty();
+
+      // ajax 설정 가져오기
+		let url = this.action;
+		let data = $(this).serialize();
+		console.log("data : ", data);
+		
+      $.ajax({
+         url: url,
+         method: "post",
+         data: data,
+         dataType: "json"
+//          contentType: "application/json"
+         
+      }).done(function(resp, textStatus, jqXHR) {
+         console.log("resp : ", resp);
+         
+         // resp는 pagination 객체를 json으로 받은 것임
+         let pagination = resp;
+         // pagination에서 dataList 꺼냄 (여기서 dataList는 List<studentVO>임)
+         let studentList = pagination.dataList;
+         
+         let trTags = [];
+         // studentVO 하나씩 꺼내서 테이블에 trTag 만들기 (함수 - fn_makeTr로 따로 뺌)
+		 if(studentList.length>0){
+	         $.each(studentList, function(idx, student){
+	            trTags.push(fn_makeTr(student));
+	         })
+		}else{
+			trTags.push($("<tr>").html($("<td colspan='9'>").html("조회 결과가 없습니다.")));
+		}
+
+         // 테이블에 tr태그들 넣어주기
+         listBody.append(trTags);
+         
+         // 페이징 넣어주기
+         pagingArea.append(pagination.pagingHTML);
+         // 검색 후엔 1페이지부터 다시 보여줘야 함
+         searchForm.find("[name=page]").val("");
+
+         // 총 몇 건인지 보여주기
+         totalRecord.text(pagination.totalRecord);
+
+      })
+
+         return false;
+         // 처음 한 번은 무조건 실행하기
+      }).submit();
+
+   // 페이지 바꿀 때 마다 리스트 새로 가져오기
+   let fn_paging = (page, event) =>{
+      event.preventDefault();
+      searchForm.find("[name=page]").val(page);
+      searchForm.submit();
+      return false;
+   }
+   
+   // vo 하나로 tr태그 하나 만드는 함수 
+   let fn_makeTr = (student) => {
+      
+      // tr 태그 만들어서 td 태그들을 append
+      // return tr태그 (data속성에 student객체 넣어줌)
+      let trTag = $("<tr>").append(
+         $("<td>").html("<input type='checkbox' name='cbkStu' value='"+ student.memNo +"'>")
+         , $("<td>").html(student.commName)
+         , $("<td>").html(student.memName)
+         , $("<td>").html(student.memNo)
+         , $("<td>").html(student.deptName)
+         , $("<td>").html(student.stuYear)
+         , $("<td>").html(student.memGender)
+         , $("<td>").html(student.memTel)
+         , $("<td>").html(student.memEmail)
+      ).addClass("stdTr").data("student", student);
+//	  console.log(trTag.data("student"));
+      return trTag;
+   }
+   
+   // 검색버튼 누르면 검색 조건이랑 검색 입력값 가지고 다시 리스트 띄우기
+   let searchUI = $("#searchUI").on("click", "#searchBtn", function(event) {
+      $(this).siblings(":input[name]").each(function(idx, input){
+         let iptName = input.name;
+         let iptValue = $(input).val();
+         searchForm.find(`[name=${iptName}]`).val(iptValue);
+      })
+      searchForm.submit();
+   })
+
+   // 체크 박스 구현
+   let cbxStuAll = $("#cbxStuAll").on("click", function(){
+      // 만약 cbkStuAll이 checked true이면 cbkStu 모두 checked true
+      // 아니면(false) cbkStu 모두 checked false
+
+      $(this).prop("checked", (i,v)=>{
+//          console.log("v:",v);
+         $("[name=cbkStu]").prop("checked", v);
+      })
+
+   })
+
+   // 몇 건(screenSize)씩 보일지 기능 구현
+   let screenSize = $("[name=screenSize]").on("change", function(event){
+      searchForm.find("[name=screenSize]").val(screenSize.val());
+      searchForm.submit();
+   })
+
+  // tr 태그 누르면 student view 보이는 기능 구현
+  $(document).on("click", ".stdTr", function(){
+	console.log("this : ", this);	
+	console.log("$(this) : ", $(this));
+	
+  });
+   

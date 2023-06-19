@@ -1,0 +1,38 @@
+package kr.or.ddit.exam.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.exam.vo.ExamVO;
+
+/**
+ * 시험 DAO
+ * 2023.05.16 생성
+ * @author ShinYuCheol
+ *
+ */
+@Mapper
+public interface ExamDAO {
+	/**
+	 * 강의별 시험 조회
+	 * @param lectNo
+	 * @return
+	 */
+	public List<ExamVO> selectExamList(String lectNo);
+	
+	/**
+	 * 시험 상세보기
+	 * @param examNo
+	 * @return
+	 */
+	public ExamVO selectExam(String examNo);
+	
+	/**
+	 * 시험 등록
+	 * @param exam
+	 * @return >= 0, 성공
+	 */
+	public int insertExam(ExamVO exam);
+	
+}

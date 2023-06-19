@@ -1,0 +1,26 @@
+package kr.or.ddit.sch.controller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.sch.service.SchService;
+import kr.or.ddit.sch.vo.SchRecVO;
+
+@Controller
+public class SchRecViewController {
+	@Inject
+	private SchService service;
+	
+	@RequestMapping("/sch/schRecView.do") // model은 클라이언트로 받아야해서괜찮다.
+	public String schrecView(@RequestParam("what") String schRecNo, Model model ) {
+		SchRecVO schrec = service.retrieveSchRec(schRecNo); //보내는것
+		model.addAttribute("schrec",schrec);
+		return "sch/schRecView";
+	}
+}

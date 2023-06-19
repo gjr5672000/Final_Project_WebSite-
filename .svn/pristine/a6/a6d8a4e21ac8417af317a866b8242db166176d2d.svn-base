@@ -1,0 +1,65 @@
+package kr.or.ddit.asgn.service;
+
+import java.io.File;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.asgn.dao.AsgnDAO;
+import kr.or.ddit.asgn.vo.AsgnSubmitVO;
+import kr.or.ddit.asgn.vo.AsgnVO;
+import kr.or.ddit.attatch.service.AttatchFileGroupService;
+import kr.or.ddit.attatch.vo.AttatchFileGroupVO;
+import kr.or.ddit.vo.Pagination;
+
+@Service
+public class AsgnServiceImpl implements AsgnService {
+	@Inject
+	private AsgnDAO asgnDAO;
+	
+	@Inject
+	private AttatchFileGroupService fileService;
+	
+	@Value("#{appInfo['board.attatchPath']}")
+	private File saveFolder;
+	
+//---------------학생이 사용----------------------------------	
+
+	@Override
+	public int createdAsgnSubmit(AsgnSubmitVO asgnSubmit) {
+		// 인증객체 꺼내기
+		Authentication authentication 
+			= SecurityContextHolder.getContext().getAuthentication();
+		AttatchFileGroupVO atchFileGroup = asgnSubmit.getAtchFileGroup();
+		Optional.ofNullable(atchFileGroup)
+				.ifPresent((afg)->{
+					//1. 파일서비스에서 metadata랑 이진데이터 넣고 1:N처리
+					fileService.createAttatchFileGroup(afg, saveFolder);
+					//2. C.O에 파일그룹에서 그룹id를 받아와서 저장한다.1:1처리
+					asgnSubmit.setAsFile(afg.getAtchId()); 
+				});
+		return asgnDAO.insertAsgnSubmit(asgnSubmit);
+	}
+
+//	@Override
+//	public int removeAsgnSubmit(AsgnSubmitVO asgnSubmit) {
+//		return 0;
+//	}
+	
+	@Override
+	public List<AsgnVO> retrieveAsgnList(String lectNo) {
+		return asgnDAO.selectAsgnList(lectNo);
+	}
+
+	@Override
+	public AsgnVO retrieveAsgn(AsgnSubmitVO asVO) {
+		return asgnDAO.selectAsgn(asVO);
+	}
+
+}

@@ -1,0 +1,34 @@
+package kr.or.ddit.curri.service;
+
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.curri.dao.CurriBoardDAO;
+import kr.or.ddit.curri.dao.TagDAO;
+import kr.or.ddit.curri.vo.CurriBoardVO;
+
+@Service
+public class CurriBoardServiceImpl implements CurriBoardService {
+
+	@Inject
+	private CurriBoardDAO cbDAO;
+	@Inject
+	private TagDAO tagDAO;
+	
+	@Override
+	public int createCurriBoard(CurriBoardVO curriBoard) {
+		// curriBoard 등록
+		int res = cbDAO.insertCurriBoard(curriBoard);
+		if(res>0) {
+			// tag 등록
+			Optional.ofNullable(curriBoard.getTagContent()).ifPresent((tag)->{
+				tagDAO.insertTagList(curriBoard);
+			});
+		}
+		return res;
+	}
+
+}

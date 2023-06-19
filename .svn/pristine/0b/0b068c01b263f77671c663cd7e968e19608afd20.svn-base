@@ -1,0 +1,10 @@
+package kr.or.ddit.Calendar.service;
+
+import java.util.List;
+
+import kr.or.ddit.Calendar.vo.CalendarVO;
+
+public interface CalendarService {
+
+	public List<CalendarVO> selectCalendar() ;
+}

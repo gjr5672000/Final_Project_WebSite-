@@ -1,0 +1,453 @@
+//gridStackDiv 선택----------------------------------------------
+const gridStackDiv = document.querySelector('#gridStackDiv');
+//jsp cPath----------------------------------------------
+const cPath = document.querySelector('#cPath').value;
+//시큐리티-------------------------------------------------
+var header = $("meta[name='_csrf_header']").attr('content');
+var token = $("meta[name='_csrf']").attr('content');
+//리스트 관련 선택-----------------------------------------
+let listBody = $("#listBody");
+let viewUrl = listBody.data("viewUrl");
+let pagingArea = $(".pagingArea");
+//-------------------------------------------------------
+// GridStack.js를 초기화하고 관련 설정을 지정합니다.
+let grid = GridStack.init({
+  cellHeight: 70, //그리드 내 셀 높이 설정
+  acceptWidgets: true, // 위젯 드롭 할 수 있는지 여부.
+  removable: '#trash', // drag-out delete class 지정 (삭제할 수 있는 위젯) 
+});
+//-------------------------------------------------------
+//화면 로딩 완료후 시작 이벤트리스너------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  initGS();
+});
+//-------------------------------------------------------
+//GridStack생성---------------------------------------------
+const initGS = () => {
+
+  // 새로운 위젯 생성 메서드 '셀렉터'. 어팬드될 위치 '바디', 헬퍼는 도움말 요소 '복사본표시'
+  GridStack.setupDragIn('.newWidget', { appendTo: 'body', helper: 'clone' });
+  // 생성될 그리드 전체 지정 
+  //List<vo> 받기 배열+객체
+  // noMove: true 움직이지 못하게함.
+  //  noResize: true 사이즈 조절 못하게 함.
+  //  locked: true 삭제 금지. ?? 위치 고정만 됨?
+  // minW 가로 넓이 최솟값 제한. maxW 가로 넓이 최댓값 제한
+  // x : 그리드 아이템 시작 열(컬럼) 위치. 0부터 시작
+  // y : 그리드 아이템 시작 행(로우) 위치. 0부터 시작
+  // w : 그리드 아이템 차지 가로 너비 == 컬럼차지개수
+  // h : 그리드 아이템 차지 세로 높이 == 로우차지개수
+  // content : 그리드 아이템 내용 지정. 텍스트나 HTML코드 넣을 수 있음. '여기안에'
+  //위젯 개별생성
+  //grid.addWidget($('<div><div class="grid-stack-item-content">New Widget</div></div>'), x, y, width, height, autoPosition, minWidth, maxWidth, minHeight, maxHeight, id);
+  // 위젯 내용 업데이트
+  //grid.addWidget($('<div><div class="grid-stack-item-content">Updated Widget</div></div>'), x, y, width, height, autoPosition, minWidth, maxWidth, minHeight, maxHeight, id);
+  // 예시
+  //grid.addWidget($('<div><div class="grid-stack-item-content">New Widget</div></div>'), undefined, undefined, 2, 2);
+  // 아이템으로 담아서 쓰는 예시
+  // let items = [
+  //     {x: 0, y: 0, w: 4, h: 2, content: '1'},
+  //     {x: 4, y: 0, w: 4, h: 4, noMove: true, noResize: true, locked: true, content: 'I can\'t be moved or dragged!<br><ion-icon name="ios-lock" style="font-size:300%"></ion-icon>'},
+  //     {x: 8, y: 0, w: 2, h: 2, minW: 2, noResize: true, content: '<p class="card-text text-center" style="margin-bottom: 0">Drag me!<p class="card-text text-center"style="margin-bottom: 0"><ion-icon name="hand" style="font-size: 300%"></ion-icon><p class="card-text text-center" style="margin-bottom: 0">...but don\'t resize me!'},
+  //     {x: 10, y: 0, w: 2, h: 2, content: '4'},
+  //     {x: 0, y: 2, w: 2, h: 2, content: '5'},
+  //     {x: 2, y: 2, w: 2, h: 4, content: '6'},
+  //     {x: 8, y: 2, w: 4, h: 2, content: '7'},
+  //     {x: 0, y: 4, w: 2, h: 2, content: '8'},
+  //     {x: 4, y: 4, w: 4, h: 2, content: '9'},
+  //     {x: 8, y: 4, w: 2, h: 2, content: '10'},
+  //     {x: 10, y: 4, w: 2, h: 2, content: '11'},
+  // ];
+//  let items = [];
+  //그리드 읽기
+//   grid.load();
+  /*
+  해당 코드는 Gridstack.js 라이브러리에서 제공하는 이벤트 핸들러를 사용하여 그리드의 위젯이 추가, 제거 또는 변경될 때마다 실행되는 코드입니다.
+
+  1. grid.on() 메서드는 GridStack 클래스의 인스턴스에서 발생하는 이벤트를 수신하고 처리합니다.
+  2. added, removed, change는 GridStack 이벤트 유형을 나타내며, 위젯이 추가, 제거 또는 변경될 때 각각 발생합니다.
+  3. function(e, items) 콜백 함수는 이벤트 객체 e와 변경된 위젯 목록인 items를 매개 변수로 사용합니다.
+  4. items.forEach() 메서드는 변경된 각 위젯에 대해 콜백 함수를 실행합니다.
+  5. str += ' (x,y)=' + item.x + ',' + item.y;는 변경된 위젯의 위치 (x, y)를 문자열에 추가합니다.
+  6. console.log() 함수는 이벤트 유형과 변경된 위젯의 수, 위치를 포함하는 문자열을 콘솔에 출력합니다.
+
+  따라서 아래 코드는 그리드에서 위젯이 추가, 제거 또는 변경될 때마다 콘솔에 변경된 위젯의 정보를 출력합니다. 
+  */
+  grid.on('added removed change', function(e, items) {
+    let str = '';
+    items.forEach(function(item) { str += ' (x,y)=' + item.x + ',' + item.y; });
+    console.log(e.type + ' ' + items.length + ' items:' + str );
+  });
+};
+//리스트 출력=====================================================================================
+let fn_makeTr = function(subject){
+	let aTag = $("<a>").attr("href", `javascript:fn_subjectDetail('${subject.subNo}')`)
+						.html(subject.subName);
+	return $("<tr>").append(
+		$("<td>").html(subject.rnum)		
+		, $("<td>").html(subject.colName)		
+		, $("<td>").html(subject.deptName)		
+		, $("<td>").html(aTag)		
+		, $("<td>").html(subject.subCommName)		
+	);
+}
+let searchForm = $("[name=searchForm]").on("submit", function(event){
+	event.preventDefault();
+	let url = this.action;
+	let method = this.method;
+	let data = $(this).serialize();
+	$.ajax({
+		url : url,
+		method : method,
+		data : data,
+		dataType : "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		listBody.empty();
+		pagingArea.empty();
+		
+		let trTags = [];
+		if(resp.dataList.length > 0){
+			$.each(resp.dataList, function(idx, subject){
+				trTags.push( fn_makeTr(subject) );
+			});
+			pagingArea.html(resp.pagingHTML);
+		}else{
+			trTags.push($("<tr>").html($("<td colspan='5'>").html("교과목 없음.")));
+		}
+		listBody.append(trTags);
+	});
+	return false;
+}).submit();
+let searchUI = $("#searchUI").on("click", "#searchBtn" , function(){
+	$(this).parents("#searchUI").find(":input[name]").each(function(idx, input){
+		let iptName = input.name;
+		let iptValue = $(input).val();
+		searchForm.find(`[name=${iptName}]`).val(iptValue);
+	});
+	searchForm.submit();
+});
+let fn_paging = function(page, event){
+	searchForm.find("[name=page]").val(page);
+	searchForm.submit();
+	searchForm.find("[name=page]").val("");
+	return false;
+}
+//===========================================================================================
+//상세조회====================================================================================
+
+//상세조회-------------------------------------------------
+let fn_subjectDetail = (subNo) =>{
+  let xhr = new XMLHttpRequest();
+  // 글씨랑 같이 쓰면서 스크립트의 데이터를 쓸때 백틱을 씀. 스크립트데이터는 ${} 탬플릿리터럴을 사용함.
+  xhr.open("GET", `${cPath}/subject/subjectView.do?what=${subNo}`, true);
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState == 4 && xhr.status == 200){
+      let subject = JSON.parse(xhr.responseText);
+      
+      createSubjectView(subject);
+
+      //즐겨찾기-------------------------------------------------
+      let favorite = document.querySelector("#favorite");
+      favorite.addEventListener("click",()=>{
+        if(favorite.name == "star"){
+          favorite.setAttribute("name","star-outline");
+        }else{
+          favorite.setAttribute("name","star");
+        }
+      });
+      //--------------------------------------------------------
+    }
+  }
+  xhr.send();
+  
+}
+//상세 조회 테이블 생성-------------------------------------------
+let createSubjectView= (subject)=> {
+
+  // 테이블 생성
+  let table = document.createElement('table');
+  table.className = 'table table-hover text-center';
+
+
+  // thead 생성
+  let thead = document.createElement('thead');
+  table.appendChild(thead);
+
+  // TR 생성
+  let tr = document.createElement('tr');
+  thead.appendChild(tr);
+
+  // TH 생성
+  let th1 = document.createElement('th');
+  th1.setAttribute('colspan', '3');
+  let h5 = document.createElement('h5');
+  h5.innerText = '교과목 상세 정보';
+  th1.appendChild(h5);
+  tr.appendChild(th1);
+
+  // TD2 생성
+  let td2 = document.createElement('td');
+  td2.setAttribute('colspan', '1');
+  tr.appendChild(td2);
+
+  // 즐겨찾기 버튼생성
+  let favoriteButton = document.createElement('button');
+  favoriteButton.className = 'btn btn-sm btn-icon btn-hover btn-white shadow-none';
+  td2.appendChild(favoriteButton);
+
+  // 즐겨찾기 아이콘추가
+  let favoriteIonIcon = document.createElement('ion-icon');
+  favoriteIonIcon.id = 'favorite';
+  favoriteIonIcon.setAttribute('name','star-outline');
+  favoriteIonIcon.style.fontSize = '20px';
+  favoriteIonIcon.style.color = 'orange';
+  favoriteButton.appendChild(favoriteIonIcon);
+  
+  // tbody 생성
+  let tbody = document.createElement('tbody');
+  tbody.id = 'detailSubject';
+  table.appendChild(tbody);
+
+  // tbody에 데이터 꽂아버리기
+  tbody.appendChild(createTableRow("교과목명",subject.subName));
+  tbody.appendChild(createTableRow("단과대학명",subject.colName));
+  tbody.appendChild(createTableRow("학과명",subject.deptName));
+  tbody.appendChild(createTableRow("교과목유형명",subject.subCommName));
+  tbody.appendChild(createTableRow("학년",subject.subGrade));
+  tbody.appendChild(createTableRow("시수",subject.subHours));
+  tbody.appendChild(createTableRow("학점",subject.subScr));
+  tbody.appendChild(createTableRow("교과목설명",subject.subExp));
+
+  // tfoot 생성
+  let tfoot = document.createElement('tfoot');
+  table.appendChild(tfoot);
+
+  // TR tfoot
+  let tfootTr = document.createElement('tr');
+  tfoot.appendChild(tfootTr);
+
+  // TD tfoot TR
+  let tfootTd = document.createElement('td');
+  tfootTd.setAttribute('colspan', '3');
+  tfootTr.appendChild(tfootTd);
+
+  // Create span inside the TD
+  let btnSpace = document.createElement('span');
+  btnSpace.className = 'btnSpace';
+  tfootTd.appendChild(btnSpace);
+
+  //잠시 들리는 div
+  let momentDiv = document.createElement('div');
+  momentDiv.appendChild(table);
+  let jebal = momentDiv.innerHTML;
+
+  console.log(jebal);
+  //그리드 생성
+  let newItem = {x: 0, y: 4, w: 4, h: 7 ,content : `${jebal}`}; 
+  grid.addWidget(newItem);
+
+}
+//테이블 로우 생성
+let createTableRow= (thValue, tdValue) =>{
+  let myTr = document.createElement("tr");
+  let myTh = document.createElement("th");
+  myTh.textContent = thValue;
+  myTr.appendChild(myTh);
+
+
+  let myTd = document.createElement("td");
+  myTd.setAttribute('colspan', '2');
+  myTd.textContent = tdValue;
+  myTr.appendChild(myTd);
+
+  return myTr;
+}
+
+//--------------------------------------------------------
+//===========================================================================================
+//교과목 등록 그리드 생성======================================================================
+//등록 폼 생성---------------------------------------------
+let fn_CreateSubjectInsert = () =>{
+  let SubjectFormDiv = `
+  <!----------------------- Form wizard with step progress ------------------------------------->
+  <div class="card">
+            <div class="card-header bg-success bg-opacity-75" style="--fowiz-primary-color: rgba( 0, 0, 0, .4)">
+
+                <!-- Step progress -->
+                <ul id="_dm-progWizardSteps" class="step-progress my-4">
+                    <li class="active" data-step="account">
+                        <span class="step-label">1단계</span>
+                    </li>
+                    <li data-step="profile">
+                        <span class="step-label">2단계</span>
+                    </li>
+                    <li data-step="address">
+                        <span class="step-label">3단계</span>
+                    </li>
+                    <li data-step="finish">
+                        <span class="step-label">요청</span>
+                    </li>
+                </ul>
+                <!-- END : Step progress -->
+
+            </div>
+            <div class="card-body">
+
+                <!-- Form sections -->
+                <form method="post" name="insertForm" id="_dm-progWizardForm" class="p-xl-3 zangdar__wizard" data-wizard="zangdar_form_d001900a-3b85-4bc8" name="zangdar_form_d001900a-3b85-4bc8">
+                    <input type="hidden" name="${paramName}" value="${headerValue}"/>
+                    <!-- Account section -->
+                    <section data-step="account" class="zangdar__step zangdar__step__active">
+                        <div class="row mb-3">
+                            <label for="_dm-wStepUsername" class="col-sm-4 col-xl-3 col-form-label">교과목명</label>
+                            <div class="col-sm-8 col-xl-9">
+                                <input name="subName" id="_dm-wStepUsername" type="text" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="_dm-wStepEmail" class="col-sm-4 col-xl-3 col-form-label">교과목유형</label>
+                            <div class="col-sm-8 col-xl-9">
+                                <select name="subComm">
+                                    <option value="A001">전공필수</option>
+                                    <option value="A002">전공선택</option>
+                                    <option value="A003">전공심화</option>
+                                    <option value="A004">교양필수</option>
+                                    <option value="A005">교양선택</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                            <button data-next="" class="btn btn-primary zangdar__next">다음</button>
+                        </div>
+                    </section>
+                    <!-- END : Account section -->
+
+                    <!-- Profile section -->
+                    <section data-step="profile" class="zangdar__step">
+                        <div class="row mb-3">
+                            <label for="_dm-wStepFirstName" class="col-sm-4 col-xl-3 col-form-label">학년</label>
+                            <div class="col-sm-8 col-xl-9">
+                                <select name="subGrade">
+                                    <option value="1">1학년</option>
+                                    <option value="2">2학년</option>
+                                    <option value="3">3학년</option>
+                                    <option value="4">4학년</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="_dm-wStepLastName" class="col-sm-4 col-xl-3 col-form-label">학점</label>
+                            <div class="col-sm-8 col-xl-9">
+                                <select name="subScr">
+                                    <option value="1">1학점</option>
+                                    <option value="2">2학점</option>
+                                    <option value="3">3학점</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                            <button data-prev="" class="btn btn-light zangdar__prev" style="display: none;">이전</button>
+                            <button data-next="" class="btn btn-primary zangdar__next">다음</button>
+                        </div>
+                    </section>
+                    <!-- END : Profile section -->
+
+                    <!-- Address section -->
+                    <section data-step="address" class="zangdar__step">
+                        <div class="row mb-3">
+                            <label for="_dm-wStepAddress" class="col-sm-4 col-xl-3 col-form-label">시수</label>
+                            <div class="col-sm-8 col-xl-9">
+                                <select name="subHours">
+                                    <option value="1">1시간</option>
+                                    <option value="2">2시간</option>
+                                    <option value="3">3시간</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="_dm-wStepCity" class="col-sm-4 col-xl-3 col-form-label">교과목설명</label>
+                            <div class="col-sm-8 col-xl-9">
+                                <textarea name="subExp"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                            <button data-prev="" class="btn btn-light zangdar__prev" style="display: none;">이전</button>
+                            <input type="submit" value="요청">
+                        </div>
+                    </section>
+                    <!-- END : Address section -->
+
+                </form>
+                <!-- END : Form sections -->
+
+            </div>
+        </div>
+ <!---------- END : Form wizard with step progress --------------------->
+  `
+//--------------------------------------------------------
+    //그리드 생성
+    let SubjectFormItem = {x: 0, y: 4, w: 4, h: 7 ,content : SubjectFormDiv}; 
+    grid.addWidget(SubjectFormItem);
+
+
+    let Formwizard = () =>{
+        // Form wizard with step progress
+        // ----------------------------------------------
+        const progressSteps = document.getElementById( "_dm-progWizardSteps");
+        const progressForm = new Zangdar( "#_dm-progWizardForm", {
+            onStepChange() {
+
+                // Remove all active variable
+                progressSteps.querySelectorAll( ".active" ).forEach( el => el.classList.remove( "active" ));
+
+                // Set active to step based on current form wizard label
+                const currentStep = progressForm.getCurrentStep().label;
+                progressSteps.querySelector( `[data-step="${currentStep}"]` ).classList.add( "active" );
+            }
+        })
+    }
+
+     Formwizard();
+
+    
+}
+//------------------------------------------------------------------------------------------
+
+ //교과목등록---------------------------------------------------------------------------------
+ let insertForm = $(document).on("submit","#_dm-progWizardForm", function(event){
+    event.preventDefault();
+    let url = `${cPath}/subject/subjectInsert.do`;
+    let method = this.method;
+    let data = $(this).serialize(); //$('#myForm').serialize(); 이런느낌.
+    console.log(data);
+    console.log(url);
+    console.log(method);
+    $.ajax({
+        url : url,
+        method : method,
+        data : data,
+        dataType : "json" ,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+            }
+    }).done(function(resp, textStatus, jqXHR) {
+        if(resp > 0){
+            alert("성공");
+            grid.removeWidget(SubjectFormItem);
+        }else{
+            alert("실패 Why???");
+        }
+    
+    });
+    return false;
+}).submit();
+//------------------------------------------------------------------------------------------
+//===========================================================================================
+
+ 

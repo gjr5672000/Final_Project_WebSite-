@@ -1,0 +1,64 @@
+package kr.or.ddit.Calendar.controller;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.Calendar.service.CalendarService;
+import kr.or.ddit.Calendar.vo.CalendarVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class CalendarController {
+
+    @Inject
+    private CalendarService service;
+
+    @GetMapping(value = "/calendar")
+	public String calView() {
+	//	List<CalendarVO> calendarList = service.selectCalendar();
+	//	model.addAttribute("calendar", calendarList);
+
+		return "calendar/calendar";
+	}
+
+    @GetMapping(value = "/calevents",produces = "application/json;charset=utf-8")
+    @ResponseBody
+	public List<Map<String, String>> calEvent() {
+
+	    List<CalendarVO> calendarList = service.selectCalendar();
+	    List<Map<String, String>> calList = new ArrayList<Map<String,String>>();
+	    Map<String, String> calEvent;
+	    for (CalendarVO calendarVO : calendarList) {
+	    	calEvent = new HashMap<String, String>();
+	    	calEvent.put("start", calendarVO.getCalSdate().toString()); // 형식
+	    	calEvent.put("end",calendarVO.getCalEdate().toString());
+	    	calEvent.put("title", calendarVO.getCalTitle());
+	    	calEvent.put("backgroundColor",calendarVO.getBackgroundColor());
+	    	calEvent.put("id",calendarVO.getCalUser());
+
+	    	calList.add(calEvent);
+		}
+
+		return calList;
+	}
+
+
+
+	@PostMapping(value = "/calendarUpdate", produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public void empUpdate(@RequestBody CalendarVO vo) {
+		log.info("vo가 어떤게 넘겨오냐!!! {}", vo);
+	}
+}

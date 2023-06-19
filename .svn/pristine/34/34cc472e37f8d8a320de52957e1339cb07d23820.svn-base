@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.curri.dao.MyCurriDAO">
+	<select id="subjectList" parameterType="SubjectVO">
+		SELECT
+		A.SUB_NO,
+		B.DEPT_NAME,
+		C.COL_NAME,
+		A.SUB_NAME,
+		A.SUB_GRADE,
+		A.SUB_SCR,
+		C.COL_NAME
+		FROM SUBJECT A LEFT JOIN DEPARTMENT B ON (A.DEPT_NO=B.DEPT_NO)
+					   LEFT JOIN COLLEAGE C ON(A.COL_NO=C.COL_NO)
+					   LEFT JOIN COMM D ON(A.SUB_COMM=D.COMM_NO);
+	</select>
+
+</mapper>

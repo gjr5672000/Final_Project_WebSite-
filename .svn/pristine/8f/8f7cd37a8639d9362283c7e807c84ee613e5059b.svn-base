@@ -1,0 +1,10 @@
+package kr.or.ddit.curri.service;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.curri.dao.HomeCurriDAO;
+
+@Service
+public class HomeCurriServiceImpl implements HomeCurriService {
+	private HomeCurriDAO dao;
+}

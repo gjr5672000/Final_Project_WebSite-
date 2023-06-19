@@ -1,0 +1,58 @@
+/**
+*
+*/
+let asgnBody = $("#asgnBody");
+
+/* tr Tag만들기 */
+
+let fn_makeTr = function(asgn) {
+	/* 과제 상세보기 a태그 만들기 */
+	/* 과제 제출여부 확인 td */
+	let as = asgn.asgnSubmitList;
+	console.log(as);
+
+	let submitTd;
+	$.each(as, function(idx, ias) {
+		if (ias.asNo == null) {
+			submitTd = $("<td>").html("미제출")
+		} else {
+			submitTd = $("<td>").html("제출(" + as.length + ")")
+		}
+	});
+
+	/* 과제리스트 tr */
+	return $("<tr>").append(
+		$("<td>").html(asgn.asgnNo)
+		, $("<td>").html(asgn.asgnName)
+		, $("<td>").html(asgn.asgnRdate)
+		, $("<td>").html(asgn.asgnDdate)
+		, $("<td>").html(submitTd)
+	);
+}
+
+/* ajax로 비동기 요청보내기 */
+let listForm = $("[name=listForm]").on("submit", function(event) {
+	event.preventDefault();
+	let url = this.action;
+	let method = this.method;
+	$.ajax({
+		url: url,
+		method: method,
+		dataType: "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		console.log(resp);
+		asgnBody.empty();
+
+		let trTags = [];
+		if (resp.length > 0) {
+			$.each(resp, function(idx, asgn) {
+				trTags.push(fn_makeTr(asgn));
+			});
+		} else {
+			trTags.push($("<tr>").html($("<td colspan='5'>").html("과제가 없습니다.")));
+		}
+		asgnBody.append(trTags);
+	});
+	return false;
+}).submit();
+

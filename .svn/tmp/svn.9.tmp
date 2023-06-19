@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.asgn.dao.AsgnDAO">
+
+	<resultMap type="AsgnVO" id="asgnMap" autoMapping="true">
+		<id property="asgnNo" column="ASGN_NO" />
+		<association property="atchFileGroup" javaType="AttatchFileGroupVO" >
+			<id column="ATCH_ID" property="atchId"/>
+			<collection property="atchfileList" ofType="AttatchFileVO" autoMapping="true" />
+		</association>
+	</resultMap>
+
+	<resultMap type="AsgnSubmitVO" id="asMap" autoMapping="true">
+		<id property="asNo" column="AS_NO" />
+		<association property="atchFileGroup" javaType="AttatchFileGroupVO" >
+			<id column="ATCH_ID" property="atchId"/>
+			<collection property="atchfileList" ofType="AttatchFileVO" autoMapping="true" />
+		</association>
+	</resultMap>
+
+	<select id="selectAsgnList" resultType="AsgnVO" parameterType="map">
+		SELECT
+		    ASGN_NO
+		    , LECT_NO
+		    , ASGN_NAME
+		    , ASGN_CONTENT
+		    , ASGN_RDATE
+		    , ASGN_DDATE
+		    , ASGN_FILE
+		    , (
+		    	SELECT COUNT(*)
+		    	FROM ASGN_SUBMIT B
+				WHERE A.ASGN_NO = B.ASGN_NO
+				AND STU_NO = #{stuNo}
+		    ) ASGN_SUB
+		FROM ASGN A
+		WHERE LECT_NO = #{lectNo}
+		ORDER BY 1
+	</select>
+
+	<select id="selectAsgn" resultMap="asgnMap" parameterType="string">
+		SELECT
+		    ASGN_NO
+		    , LECT_NO
+		    , ASGN_NAME
+		    , ASGN_CONTENT
+		    , ASGN_RDATE
+		    , ASGN_DDATE
+		    , ASGN_FILE
+		    , ATCH_FILE.*
+		FROM ASGN LEFT OUTER JOIN ATCH_FILE ON (ASGN_FILE = ATCH_ID)
+		WHERE ASGN_NO = #{asgnNo}
+	</select>
+
+	<select id="selectAsgnSubmit" resultMap="asMap" parameterType="AsgnSubmitVO">
+		SELECT
+			AS_NO
+		    , ASGN_NO
+		    , COURSE_NO
+		    , STU_NO
+		    , AS_SDATE
+		    , AS_CONTENT
+		    , AS_SCORE
+		    , AS_FILE
+		    , ATCH_FILE.*
+		FROM ASGN_SUBMIT  LEFT OUTER JOIN ATCH_FILE ON (AS_FILE = ATCH_ID)
+		WHERE ASGN_NO = #{asgnNo}
+		AND STU_NO = #{stuNo}
+	</select>
+
+	<select id="selectASonAsNo" resultMap="asMap" parameterType="string">
+		SELECT
+			AS_NO
+		    , ASGN_NO
+		    , COURSE_NO
+		    , STU_NO
+		    , AS_SDATE
+		    , AS_CONTENT
+		    , AS_SCORE
+		    , AS_FILE
+		    , ATCH_FILE.*
+		FROM ASGN_SUBMIT  LEFT OUTER JOIN ATCH_FILE ON (AS_FILE = ATCH_ID)
+		WHERE AS_NO = #{asNo}
+	</select>
+
+	<insert id="insertAsgnSubmit" parameterType="AsgnSubmitVO">
+		<selectKey order="BEFORE" resultType="string" keyProperty="asNo">
+			SELECT AS_SEQ.NEXTVAL
+			FROM DUAL
+		</selectKey>
+		INSERT INTO ASGN_SUBMIT
+	    (
+	       	  AS_NO
+	        , ASGN_NO
+	        , COURSE_NO
+	        , STU_NO
+	        , AS_SDATE
+	        , AS_CONTENT
+	        , AS_SCORE
+	        , AS_FILE
+	    )
+		VALUES
+	    (
+	        #{asNo,jdbcType=VARCHAR}
+	        , #{asgnNo,jdbcType=VARCHAR}
+	        , (SELECT COURSE_NO FROM COURSE WHERE LECT_NO = #{courseNo})
+	        , #{stuNo,jdbcType=VARCHAR}
+	        , SYSDATE
+	        , #{asContent,jdbcType=VARCHAR}
+	        , 0
+	        , #{asFile,jdbcType=NUMERIC}
+	    )
+	</insert>
+
+	<delete id="deleteAsngSubmit" parameterType="string">
+		DELETE FROM ASGN_SUBMIT
+		WHERE AS_NO = #{asNo}
+	</delete>
+</mapper>

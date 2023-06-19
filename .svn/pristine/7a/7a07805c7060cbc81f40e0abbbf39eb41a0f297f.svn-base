@@ -1,0 +1,29 @@
+package kr.or.ddit.member.controller;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.department.dao.DepartmentDAO;
+
+@Controller
+@RequestMapping("/group/members")
+public class GroupListController {
+	
+	@Inject
+	private DepartmentDAO depDAO;
+	
+	@GetMapping
+	public String getUI(Model model) {
+		model.addAttribute("deptList", depDAO.selectDepartmentList());
+		
+		return "group/groups";
+	}
+	
+}
+
+
+

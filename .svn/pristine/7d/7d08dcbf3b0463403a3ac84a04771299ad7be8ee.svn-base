@@ -1,0 +1,28 @@
+package kr.or.ddit.tutition.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.tutition.vo.TutiPayVO;
+import kr.or.ddit.vo.Pagination;
+
+@Mapper
+public interface TutitionDAO {
+
+	/**
+	 * 등록금게시글 등록 기능
+	 * @param tutipay
+	 * @return
+	 */
+	public int insertTutiPay(TutiPayVO tutipay);
+	
+	public List<TutiPayVO> selectTutiPayList(Pagination<TutiPayVO> pagination);
+	
+	public List<TutiPayVO> selectTutiPayMemList(Pagination<TutiPayVO> pagination);
+
+	public int selectTotalRecord(Pagination<TutiPayVO> pagination);
+
+	public String selectSchNoForDept(Map<String, String> param);
+}

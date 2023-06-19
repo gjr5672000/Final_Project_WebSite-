@@ -1,0 +1,20 @@
+package kr.or.ddit.curri.vo;
+
+import java.time.LocalDateTime;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
+
+@Data
+public class CurriVO {
+	@NotBlank
+	private String curriNo;
+	@NotBlank
+	private String curriDesigner;
+	@NotBlank
+	private String curriName;
+	@NotNull
+	private LocalDateTime curriRdate;
+}

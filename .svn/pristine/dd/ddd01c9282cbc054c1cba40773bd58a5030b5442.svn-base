@@ -1,0 +1,52 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"  %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags"  prefix="security"%>
+
+<div class="space m-3 p-5">
+<table class="table table-bordered">
+	<thead class="table-primary">
+		<tr>
+			<th>학생명</th>
+			<th>과제내용</th>
+			<th>제출일자</th>
+		</tr>
+	</thead>
+	
+	<tbody id="listBody">
+	
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="3">
+				<div class="pagingArea d-flex justify-content-center">
+				
+				</div>
+				<div id="searchUI" class="row d-flex justify-content-center">
+					<div class="col-auto">	
+						<select name="searchType" class="form-control">
+							<option value>전체</option>
+							<option value="name">학생명</option>
+						</select>
+					</div>
+					<div class="col-auto">	
+						<input type="text" name="searchWord"  class="form-control col-auto" />
+					</div>
+					<div class="col-auto">	
+						<input type="button" value="검색" id="searchBtn" class="btn btn-primary"/>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+</div>
+<form name="searchForm">
+	<input type="hidden" name="page" placeholder="page"/>
+	<input type="hidden" name="searchType" placeholder="searchType"/>
+	<input type="hidden" name="searchWord" placeholder="searchWord"/>
+</form>
+
+<script src="${cPath }/resources/js/asgn/proStuAsgnView.js"></script>

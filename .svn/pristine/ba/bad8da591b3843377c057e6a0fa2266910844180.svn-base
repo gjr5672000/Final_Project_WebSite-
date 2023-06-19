@@ -1,0 +1,225 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+   pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>    
+<!-- 학생 상세보기 모달 -->
+<div id="stuModal" style="display: none;">
+
+<div id="modalDiv" class="card border-2 border-primary">
+      <div id="modalHead" class="card-header toolbar">
+         <div class="toolbar-start">
+            <h4>학생 상세 정보</h4>
+         </div>
+         <div class="toolbar-end">
+            <button onclick="modalClose()" class="btn"><ion-icon name="close-outline"></ion-icon></button>
+         </div>
+      </div>
+      <div id="modalBody" class="">
+      <div id="modalCont1" class="card-body overflow-scroll scrollable-content">
+               <div>
+            <div class="modalTitle"><h5 class="mb-3">학적 정보</h5></div>
+                  <div id="profileImgDiv">
+                  </div>
+                  
+               </div>
+               <div>
+               <form id="infoUpdateForm" action="${cPath }/group/studentUpdate.do">
+                  <table id="profileTb" class="table table-bordered">
+                     <tr>
+                        <th>이름</th>
+                        <td><input type="text" name="memNameModal"></td>
+                        <th>단과대학</th>
+                        <td><input type="text" name="colNameModal" disabled><input type="text" name="colNoModal" disabled></td>
+                     </tr>
+                     <tr>
+                        <th>학번</th>
+                        <td><input type="text" name="memNoModal" disabled></td>
+                        <th>소속학과</th>
+                        <td><input type="text" name="deptNameModal" disabled><input type="text" name="deptNoModal" disabled></td>
+                     </tr>
+                     <tr>
+                        <th>주민번호</th>
+                        <td>
+                        <input type="text" name="memRrno1Modal" disabled>-
+                        <input type="text" value="*******" disabled>
+                        <input type="text" name="memGenderModal" disabled>
+                        </td>
+                        <th>학년</th>
+                        <td><input type="text" name="stuYearModal"></td>
+                     </tr>
+                     <tr>
+                        <th>전화번호</th>
+                        <td><input type="text" name="memTelModal"></td>
+                        <th>학적상태</th>
+                        <td><input type="text" name="commNameModal"></td>
+                     </tr>
+                     <tr>
+                        <th>이메일</th>
+                        <td><input type="text" name="memEmailModal"></td>
+                        <th>입학일자</th>
+                        <td><input type="date" name="stuEdateModal" disabled></td>
+                     </tr>
+                     <tr>
+                        <th>주소</th>
+                        <td>
+							<input type="text" name="memZipModal">
+							<input type="text" name="memAdd1Modal">
+							<input type="text" name="memAdd2Modal">
+                        </td>
+                        <th>졸업일자</th>
+                        <td><input type="date" name="stuGdateModal"></td>
+                     </tr>
+                  </table>
+               <div>
+                  <input type="file" name="memPhotoFileModal">
+                  <input id="infoUpdateBtn" type="submit" value="저장">
+               </div>
+                  </form>
+               </div>
+            
+      </div>
+         <div id="modalCont2" class="card-body overflow-scroll scrollable-content">
+            <div class="modalTitle"><h5 class="mb-3">인적 정보</h5><br></div>
+               <table class="table table-bordered">
+                  <tr>
+                     <th>이름</th>
+                     <td><input type="text" name=""></td>
+                     <th></th>
+                     <td><input type="text" name=""></td>
+                  </tr>
+                  <tr>
+                     <th>1</th>
+                     <td></td>
+                     <th>2</th>
+                     <td></td>
+                  </tr>
+                  <tr>
+                     <th>3</th>
+                     <td></td>
+                     <th>4</th>
+                     <td></td>
+                  </tr>
+                  <tr>
+                     <th>5</th>
+                     <td></td>
+                     <th>6</th>
+                     <td></td>
+                  </tr>
+                  <tr>
+                     <th>7</th>
+                     <td></td>
+                     <th>8</th>
+                     <td></td>
+                  </tr>
+                  <tr>
+                     <th>주소</th>
+                     <td></td>
+                  </tr>
+               </table>
+            <div class="modalTitle"><h5 class="mb-3">입학/졸업 정보</h5></div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- 학생 상세보기 모달 끝 -->
+
+<!-- 수강신청 강의 상세 정보보기 모달 -->
+<div id="lectInfoModal" style="display: none;">
+
+<div id="lectModalDiv" class="card border-2 border-primary">
+      <div id="lectModalHead" class="card-header toolbar">
+         <div class="toolbar-start">
+            <h4>강의 상세 정보</h4>
+         </div>
+         <div class="toolbar-end">
+            <button onclick="lectModalClose()" class="btn"><ion-icon name="close-outline"></ion-icon></button>
+         </div>
+      </div>
+      <div id="lectModalBody">
+         <div id="lectDetailTab">
+            <ul class="nav nav-callout nav-fill mb-3">
+               <li class="nav-item">
+                  <button type="button" id="lectTab1" class="nav-link active" data-bs-toggle="tab" data-bs-target="#lectTab1Body" aria-controls="lectTab1Body" aria-selected="true">강의상세조회</button>
+               </li>
+               <li class="nav-item" role="presentation">
+                  <button type="button" id="lectTab2" class="nav-link" data-bs-toggle="tab" data-bs-target="#lectTab2Body" aria-controls="lectTab2Body" aria-selected="false">강의계획서</button>
+               </li>
+               <li class="nav-item" role="presentation">
+                  <button type="button" id="lectTab3" class="nav-link" data-bs-toggle="tab" data-bs-target="#lectTab3Body" aria-controls="lectTab3Body" aria-selected="false">이전강의정보</button>
+               </li>
+            </ul>
+
+         </div>
+         <div class="tab-content">
+			<div id="lectTab1Body" class="tab-pane fade show active" aria-labelledby="lectTab1">
+	            <div>
+	                <ul class="">
+	                    <li><strong>강의명 :<span id="lectNameM"></span></strong></li>
+	                    <li class="top"><span id="subCommNameM"></span><span id="subGradeM"></span>학년</li>
+	                    <li><span id="memNameM"></span></li>
+	                </ul>
+	                <ul class="">
+	                    <li id="lectNoM"></li>
+	                    <li id="lectOnfNameM"></li>
+	                    <li id="lectTimePlaceM"></li>
+	                </ul>					
+		        </div>
+		        <div>
+		        </div>
+         	</div>
+			<div id="lectTab2Body" class="tab-pane fade" aria-labelledby="lectTab2">
+				<div id="lectPlan">
+					<table class="table table-bordered">
+						<tr>
+							<th>강의 상세</th>
+							<td colspan="3" id="lectExpM"></td>
+						</tr>
+						<tr>
+							<th>학점</th>
+							<th>시수</th>
+							<th colspan="2">개설학과</th>
+						</tr>
+						<tr>
+							<td id="subScrM"></td>
+							<td id="subHoursM"></td>
+							<td id="colNameM"></td>
+							<td id="deptNameM"></td>
+						</tr>
+					</table>
+				</div>
+				<div>
+					<h6>주차별 강의 계획</h6>
+					<table class="table table-bordered" id="lwpM">
+					
+					</table>
+				</div>
+			</div>
+			<div id="lectTab3Body" class="tab-pane fade" aria-labelledby="lectTab3">
+			</div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- 수강신청 강의 상세 정보보기 끝 -->
+<!-- ~~~~~~~~~~~~~~~~~~~~교직원 교과목 요청 처리 모달~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<div id="subjectProcessModal" style="display: none;"> 
+ 
+   <div id="subjectProcessModalDiv" class="card border-2 border-primary"> 
+       <div id="subjectProcessModalHead" class="card-header toolbar">
+          <div class="toolbar-start">
+              <h4>교직원 교과목 요청 처리 모달</h4>
+          </div>
+          <div class="toolbar-end">
+              <button onclick="subjectProcessModalClose()" class="btn"><ion-icon name="close-outline"></ion-icon></button>
+          </div>
+       </div>
+       <div id="subjectProcessModalBody" class="">
+       		<form id="subjectProcessForm" method="POST">
+       		<table class="table table-hover text-center">
+       			<tbody id="subjectProcessTBody"></tbody>
+       		</table>
+       		</form> 
+       </div>
+   </div> 
+   
+</div> 
+

@@ -1,0 +1,17 @@
+package kr.or.ddit.curri.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.curri.vo.CurriDetailVO;
+import kr.or.ddit.curri.vo.CurriVO;
+import kr.or.ddit.subject.vo.SubjectVO;
+
+@Mapper
+public interface MyCurriDAO {
+	public int insertMyCurri(CurriVO curri);
+	public int insertCurriDetail(CurriDetailVO curriDetail);
+	public List<CurriVO> selectMemCurri(String designer);
+	public List<SubjectVO>subjectList();
+}

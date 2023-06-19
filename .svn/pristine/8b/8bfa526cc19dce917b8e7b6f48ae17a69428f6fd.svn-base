@@ -1,0 +1,21 @@
+package kr.or.ddit.score.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.score.vo.CourseScoreDetailVO;
+
+/**
+ * 점수 서비스
+ * @author ShinYuCheol
+ *
+ */
+public interface ScoreService {
+	
+	/**
+	 * 강의별 학생 성적조회(중간고사,기말고사,출석,과제)
+	 * @param paramScore
+	 * @return
+	 */
+	public List<CourseScoreDetailVO> retrieveCourseScoreDetailList(String lectNo);
+}

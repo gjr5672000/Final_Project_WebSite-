@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.professor.dao.ProfessorDAO">
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- <sql id="seachFrag"> -->
+<!-- 	FROM STUDY INNER JOIN PROFESSOR ON (STUDY.PRO_NO = PROFESSOR.PRO_NO) -->
+<!--     INNER JOIN MEMBER ON (PROFESSOR.PRO_NO = MEMBER.MEM_NO) -->
+<!-- 		<where> -->
+<!-- 			<if  -->
+<!-- 			test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)"> -->
+<!-- 				<choose> -->
+<!-- 					<when test="simpleCondition.searchType eq 'studyName'"> -->
+<!-- 						INSTR(STUDY_NAME, #{simpleCondition.searchWord}) > 0 -->
+<!-- 					</when> -->
+<!-- 					<when test="simpleCondition.searchType eq 'studySubject'"> -->
+<!-- 						INSTR(STUDY_SUBJECT, #{simpleCondition.searchWord}) > 0 -->
+<!-- 					</when> -->
+<!-- 					<otherwise> -->
+<!-- 						INSTR(STUDY_NAME, #{simpleCondition.searchWord}) > 0 -->
+<!-- 						OR -->
+<!-- 						INSTR(STUDY_SUBJECT, #{simpleCondition.searchWord}) > 0 -->
+<!-- 					</otherwise> -->
+				
+<!-- 				</choose> -->
+<!-- 			</if> -->
+<!-- 		</where> -->
+<!-- </sql> -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- 검색은 연구명, 주제 또는 같이 -->
+<!-- <select id="selectTotalRecord" resultType="int" parameterType="Pagination"> -->
+<!-- 	SELECT COUNT(*) -->
+<!-- 	FROM STUDY INNER JOIN PROFESSOR ON (STUDY.PRO_NO = PROFESSOR.PRO_NO) -->
+<!--     INNER JOIN MEMBER ON (PROFESSOR.PRO_NO = MEMBER.MEM_NO) -->
+<!-- </select> -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<select id="selectStudyList" resultType="StudyVO">
+	SELECT B.*
+	FROM
+	(	
+		SELECT A.*, ROWNUM RNUM
+		FROM(
+			SELECT
+			    STUDY_NO,
+			    STUDY.PRO_NO,
+			    STUDY_NAME,
+			    STUDY_SDATE,
+			    STUDY_EDATE,
+			    STUDY_SUBJECT,
+			    STUDY_PURPOSE,
+			    MEM_NAME,
+			    (
+			        SELECT COUNT(*)
+			        FROM ATCH_FILE
+			        WHERE STUDY_FILE = ATCH_ID 
+			    )ATCH_COUNT
+		    FROM STUDY INNER JOIN MEMBER ON (STUDY.PRO_NO = MEMBER.MEM_NO)
+		    ORDER BY STUDY_NO DESC
+		    ) A
+	) B
+<!-- 	<![CDATA[ -->
+<!-- 	WHERE RNUM >=#{startRow} AND RNUM <=#{endRow} -->
+<!-- 	]]> -->
+</select>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<select id="selectStudy" resultType="StudyVO" parameterType="string">
+		SELECT
+		    STUDY_NO,
+		    PRO_NO,
+		    STUDY_NAME,
+		    STUDY_SDATE,
+		    STUDY_EDATE,
+		    STUDY_SUBJECT,
+		    STUDY_PURPOSE,
+		    STUDY_FILE,
+		    MEM_NAME,
+		    
+		    ATCH_ID,
+		    ATCH_SEQ,
+		    ATCH_MIME,
+		    ATCH_ORIGIN_NAME,
+		    ATCH_SAVE_NAME,
+		    ATCH_SIZE,
+		    ATCH_DATE
+		FROM
+		    STUDY INNER JOIN MEMBER ON (PRO_NO = MEM_NO) 
+		    LEFT OUTER JOIN ATCH_FILE ON (STUDY_FILE = ATCH_ID)
+		    WHERE STUDY_NO = #{studyNo}
+</select>
+
+
+</mapper>

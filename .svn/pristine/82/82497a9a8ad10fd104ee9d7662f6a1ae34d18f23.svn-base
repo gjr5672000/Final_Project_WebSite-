@@ -1,0 +1,41 @@
+package kr.or.ddit.license.vo;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotBlank;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import kr.or.ddit.attatch.vo.AttatchFileGroupVO;
+import kr.or.ddit.attatch.vo.AttatchFileVO;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Data
+@EqualsAndHashCode(of="")
+//@NoArgsConstructor
+//@AllArgsConstructor(access= AccessLevel.PACKAGE)
+@ToString
+public class LicenseVO implements Serializable {
+	private int rnum;
+	@NotBlank
+	private String licenseNo;
+	@NotBlank
+	private String licenseName;
+	@NotBlank
+	private String licenseContent;
+	@NotBlank
+	private String licenseAgency;
+	@NotBlank
+	private String licenseLimit;
+	
+
+		);
+	}
+}

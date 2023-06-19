@@ -1,0 +1,35 @@
+package kr.or.ddit.lecture.vo;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import lombok.Data;
+
+@Data
+public class LectureVO {
+// lecture
+	// list <lecture week plan VO>
+	@NotBlank
+	private String lectNo;
+	@NotBlank
+	private String subNo;
+	@NotBlank
+	private String proNo;
+	@NotBlank
+	private String lectName;
+	@NotBlank
+	private String lectExp;
+	@NotNull
+	private Integer lectMm;
+	@NotNull
+	private Integer lectPm;
+	@NotBlank
+	private String lectOnf;
+	@NotBlank
+	private String lectState;
+	@NotNull
+	private Integer ayYear;
+	@NotNull
+	private Integer aySemester;
+	// 강의 싱세시간, 강의실 -> List<강의시간VO>
+}

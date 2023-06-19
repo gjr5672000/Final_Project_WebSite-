@@ -1,0 +1,13 @@
+package kr.or.ddit.curri.service;
+
+import kr.or.ddit.curri.vo.CurriBoardVO;
+
+public interface CurriBoardService {
+//	public List<CurriBoardVO> selectCurriBoardList();
+//	public CurriBoardVO selectCurriBoard(String cbNo);
+	
+	public int createCurriBoard(CurriBoardVO curriBoard);
+	
+//	public int updateCurriBoard(CurriBoardVO curriBoard);
+//	public int deleteCurriBoard(String cbNo);
+}

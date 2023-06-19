@@ -1,0 +1,228 @@
+//cPath 설정-----------------------------------------------------------------------------
+const cPath = document.querySelector('#cPath').value;
+//-출력할 listBody 체킁------------------------------------------------------------------
+let listBody = $("#listBody");
+let curriList = $("#curriList");
+//-+버튼 클릭후 myTest 누를 때 이벤트----------------------------------------------------
+let fn_makeTr = function(board) {
+
+	let btn = $("<button>")
+		.addClass("btn btn-icon btn-info btn-xs")
+		.html('<ion-icon name="add-outline"></ion-icon>')
+		.click(function() {
+			let parentTr = $(this).parent().parent();
+			let subName = parentTr.children().eq(3).text();
+			let subNo = parentTr.children().eq(0).text();
+
+			// myTest 테이블의 각 td에 클릭 이벤트를 추가합니다.
+			// 클릭된 td에 subName이 추가되고, 원래의 tr이 사라집니다.
+			// 이후 클릭 이벤트는 제거됩니다.
+			$("#myTest td").off().on("click", function() {
+				$(this).text(subName);
+				$(this).data("subNo", subNo);
+				parentTr.hide();
+				$("#myTest td").off("click");  // 클릭 이벤트를 제거합니다.
+			});
+		});
+
+	return $("<tr>").append(
+		$("<td>").html(board.subNo)
+		, $("<td>").html(board.deptName)
+		, $("<td>").html(board.colName)
+		, $("<td>").html(board.subName)
+		, $("<td>").html(board.subGrade)
+		, $("<td>").html(board.subScr)
+		, $("<td>").html(board.colName)
+		, $("<td>").html(btn)
+	);
+}
+//-------------------------------------------------------------------------------------
+// 이전에 클릭된 td 찾기---------------------------------------------------------------
+const youTest = document.querySelector("#myTest");
+// 데이터 받아서 table 생성------------------------------------------------------------
+const fmkTbl = (data) => {
+	let eightTbl = "";
+	let period = ["1-1", "1-2", "2-1", "2-2", "3-1", "3-2", "4-1", "4-2"];
+	for (let i = 0; i < 8; i++) {
+		eightTbl += `
+		        <div>
+		        <table class="table table-hover text-center">
+		            <tbody>
+		                <tr>
+		                    <th>${period[i]}</th>
+		                </tr>`;
+		for (let j = 1; j <= 7; j++) {
+			eightTbl += `
+		                <tr>
+		                    <td class="${(i + 1) * 100 + j
+				} "></td>
+		                </tr > `;
+		}
+		eightTbl += `
+		            </tbody >
+		        </table >
+		        </div>`;
+	}
+	youTest.innerHTML = eightTbl;
+}
+
+fmkTbl();
+//드래그앤 드랍------------------------------------------------------------------------
+$(function() {
+	// 모든 td 요소를 드래그 가능하도록 설정합니다.
+	$("#myTest td").draggable({
+		helper: "clone",  // 드래그 중인 원본 요소의 복제본을 생성합니다.
+		revert: "invalid"  // 드랍 가능한 영역 외부로 드래그한 경우, 요소를 원래 위치로 되돌립니다.
+	});
+
+	// 모든 td 요소를 드랍 가능하도록 설정합니다.
+	$("#myTest td").droppable({
+		accept: "#myTest td",  // #myTest 테이블의 td 요소만을 드랍 대상으로 허용합니다.
+		drop: function(event, ui) {
+			// 드랍된 요소 (ui.helper)와 드랍 대상 (this)의 텍스트를 서로 바꿉니다.
+			var droppedText = $(ui.helper).text();
+			var targetText = $(this).text();
+			$(this).text(droppedText);
+			$(ui.draggable).text(targetText);
+
+			var droppedClass = $(ui.helper).attr('class');
+			var targetClass = $(this).attr('class');
+			$(this).attr('class', droppedClass);
+			$(ui.draggable).attr('class', targetClass);
+
+			// 드롭된 요소와 드롭 대상의 data를 서로 바꿉니다.
+			var droppedData = $(ui.helper).data('subNo');
+			var targetData = $(this).data('subNo');
+			$(this).data('subNo', droppedData);
+			$(ui.draggable).data('subNo', targetData);
+		}
+	});
+});
+//리셋 버튼 클릭시 이벤트----------------------------------------------------------------
+function resetInputs() {
+	const inputs = document.querySelectorAll('input[type="text"]');
+	inputs.forEach(input => {
+		input.value = '';
+	});
+//클릭한 td 출력-------------------------------------------------------------------------
+	const tds = document.querySelectorAll('#myTest td');
+	tds.forEach(td => {
+		td.innerText = '';
+	});
+//--td 숨기깅----------------------------------------------------------------------------
+	const hiddenRows = document.querySelectorAll('#listBody tr:hidden');
+	hiddenRows.forEach(row => {
+		row.style.display = '';
+	});
+}
+//-------------------------------------------------------------------------------------
+$("#saveBtn").click(function() {
+	let curriDetail = [];
+
+	// 모든 td의 데이터를 배열에 넣습니다.
+	$("#myTest td").each(function() {
+		let cellData = $(this).data("subNo"); // subNo를 가져옵니다.
+		let classInfo = $(this).attr("class");
+		let match = classInfo.match(/\d+/);  // 이 정규 표현식은 문자열에서 연속된 숫자들을 찾습니다.
+		let cdPriority = match ? match[0] : null;  // 만약 숫자들을 찾았다면 그것을 사용하고, 찾지 못했다면 null을 사용합니다.
+		console.log(cellData);
+		if (cellData) {
+			curriDetail.push({
+				cdPriority: cdPriority,
+				subNo: cellData,
+			});
+		}
+	});
+	var curriName = document.getElementById("curriName").value;
+	// curri 정보를 설정합니다.
+
+	// 서버에 전송할 데이터를 구성합니다.
+	let dataToSave = {
+		curriName: curriName,
+		curriDetail: curriDetail,
+	};
+
+	console.log(dataToSave);
+	// AJAX 요청을 통해 데이터를 서버에 전송합니다.
+	$.ajax({
+		url: `${cPath}/curri/myCurri.do/curriInsert`,
+		type: 'POST',
+		data: JSON.stringify(dataToSave),
+		contentType: 'application/json;charset=utf-8',
+		dataType: 'json',
+		success: function(response) {
+			alert("나의 커리가 정상적으로 저장되었습니다.");
+		},
+		error: function(error) {
+		}
+	});
+});
+//검색기능!!------------------------------------------------------------------------
+let searchForm = $("[name=searchForm]").on("submit", function(event) {
+	event.preventDefault();
+	let url = this.action;
+	let method = this.method;
+	let data = $(this).serialize();
+	$.ajax({
+		url: url,
+		method: method,
+		data: data,
+		dataType: "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		console.log(resp);
+		listBody.empty();
+
+		let trTags = [];
+		if (resp.length > 0) {
+			$.each(resp, function(idx, board) {
+				trTags.push(fn_makeTr(board));
+			});
+		} else {
+			trTags.push($("<tr>").html($("<td colspan='3'>").html("교과목 없음.")));
+		}
+		listBody.append(trTags);
+	});
+	return false;
+}).submit();
+
+let searchUI = $("#searchUI").on("click", "#searchBtn", function() {
+	$(this).parents("#searchUI").find(":input[name]").each(function(idx, input) {
+		let iptName = input.name;
+		let iptValue = $(input).val();
+		searchForm.find(`[name=${iptName}]`).val(iptValue);
+	});
+	searchForm.submit();
+
+});
+//커리 리스트 출력 이벤트-----------------------------------------------------------------
+	let method = this.method;
+	let data = $(this).serialize();
+	$.ajax({
+		url: `${cPath}/curri/myCurri.do/curriList`,
+		method: method,
+		data: data,
+		dataType: "json"
+	}).done(function(resp, textStatus, jqXHR) {
+		console.log(resp);
+		curriList.empty();
+
+		let trTags = [];
+		if (resp.length > 0) {
+			$.each(resp, function(idx, board) {
+				trTags.push(cr_makeTr(board));
+			});
+		} else {
+			trTags.push($("<tr>").html($("<td colspan='3'>").html("저장된 나의 커리 없음.")));
+		}
+		curriList.append(trTags);
+	});
+let cr_makeTr = function(board) {
+
+
+	return $("<tr>").append(
+		$("<td>").html(board.curriNo)
+		, $("<td>").html(board.curriName)
+		, $("<td>").html(board.curriRdate)
+	);
+}
+

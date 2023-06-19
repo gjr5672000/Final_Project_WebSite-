@@ -1,0 +1,8 @@
+prodImages=/resources/prodImages
+files=/resources/files
+contracts=file:d:/contractFiles
+
+# file upload setting
+maxInMemorySize=10240
+maxUploadSize=102400000
+maxUploadSizePerFile=10240000
